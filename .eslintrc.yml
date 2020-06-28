@@ -1,0 +1,11 @@
+parserOptions:
+  ecmaVersion: 2018
+
+env:
+  es6: true
+  node: true
+
+extends: 'htmlacademy/node'
+
+rules:
+  object-curly-spacing: always
