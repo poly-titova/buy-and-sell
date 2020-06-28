@@ -1,6 +1,6 @@
 "use strict";
 
-const chalk = require(`chalk`);
+// const chalk = require(`chalk`);
 const fs = require(`fs`);
 const { ExitCode } = require(`../constants`);
 const {
@@ -39,13 +39,23 @@ const generateOffers = count =>
       category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]]
     }));
 
-const makeMockData = (filename, content) => {
-  fs.writeFile(filename, content, (err) => {
-    if (err) {
-      return console.error(chalk.red(`Can't write data to file`));
-    }
+// const makeMockData = (filename, content) => {
+//   fs.writeFile(filename, content, (err) => {
+//     if (err) {
+//       return console.error(`Can't write data to file`);
+//     }
 
-    return console.log(chalk.green(`The file has been saved!`));
+//     return console.log(`The file has been saved!`);
+//   });
+// };
+
+const makeMockData = async (filename, content) => {
+  fs.writeFile(filename, content, (err) => {
+    try {
+      return console.log(`The file has been saved!`);
+    } catch (err) {
+      return console.error(`Can't write data to file`);
+    }
   });
 };
 
@@ -55,7 +65,7 @@ module.exports = {
     const [count] = userIndex;
 
     if (count > MAX_COUNT) {
-      console.error(chalk.red(`Не больше ${MAX_COUNT} объявлений`));
+      console.error(`Не больше ${MAX_COUNT} объявлений`);
       process.exit(ExitCode.fail);
     }
 
