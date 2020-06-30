@@ -1,7 +1,7 @@
 "use strict";
 
 const chalk = require(`chalk`);
-const fs = require(`fs`);
+const fs = require(`fs`).promises;
 const { ExitCode } = require(`../constants`);
 const {
   getPictureFilename,
@@ -39,29 +39,9 @@ const generateOffers = count =>
       category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]]
     }));
 
-const makeMockData = (filename, content) => {
-  fs.writeFile(filename, content, (err) => {
-    if (err) {
-      return console.error(chalk.red(`Can't write data to file`));
-    }
-
-    return console.log(chalk.green(`The file has been saved!`));
-  });
-};
-
-// const makeMockData = async (filename, content) => {
-//   fs.writeFile(filename, content, (err) => {
-//     try {
-//       return console.log(`The file has been saved!`);
-//     } catch (err) {
-//       return console.error(`Can't write data to file`);
-//     }
-//   });
-// };
-
 module.exports = {
   name: `--generate`,
-  run(userIndex) {
+  async run(userIndex) {
     const [count] = userIndex;
 
     if (count > MAX_COUNT) {
@@ -72,6 +52,11 @@ module.exports = {
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(generateOffers(countOffer));
 
-    makeMockData(FILE_NAME, content);
+    try {
+      await fs.writeFile(FILE_NAME, content);
+      console.log(chalk.green(`The file has been saved!`));
+    } catch (err) {
+      console.error(chalk.red(`Can't write data to file`));
+    }
   }
 };
