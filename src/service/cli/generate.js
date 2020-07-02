@@ -13,9 +13,6 @@ const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
 const FILE_NAME = `mock.json`;
 const {
-  TITLES,
-  CATEGORIES,
-  SENTENCES,
   OfferType,
   SumRestrict,
   PictureRestrict
