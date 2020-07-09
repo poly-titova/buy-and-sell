@@ -18,16 +18,16 @@ const {
   PictureRestrict
 } = require(`./mockData`);
 
-const pathCategories = './data/categories.txt'
-const pathSentences = './data/sentences.txt'
-const pathTitles = './data/titles.txt'
+const pathCategories = './data/categories.txt';
+const pathSentences = './data/sentences.txt';
+const pathTitles = './data/titles.txt';
 
 const readFiles = async (path) => {
   try {
-    const result = await fs.readFile(path, "utf8");
-    return result.trim().split(`\n`);
-  } catch (e) {
-    console.error(e);
+    const result = await fs.readFile(path, `utf8`);
+    return result.split(`\n`);
+  } catch (err) {
+    console.error(err);
   }
 }
 
@@ -74,6 +74,6 @@ module.exports = {
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(generateOffers(countOffer, CATEGORIES, SENTENCES, TITLES));
 
-    makeMockData(FILE_NAME, content)
+    makeMockData(FILE_NAME, content);
   }
 };
