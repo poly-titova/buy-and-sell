@@ -6,7 +6,7 @@ const myRoutes = new Router();
 
 // Определяем `GET` маршруты.
 // В качестве ответа отправляем путь маршрута.
-myRouter.get(`/`, (req, res) => res.send(`/my`));
-myRouter.get(`/comments`, (req, res) => res.send(`/my/comments`));
+myRoutes.get(`/`, (req, res) => res.send(`/my`));
+myRoutes.get(`/comments`, (req, res) => res.send(`/my/comments`));
 
 module.exports = myRoutes;
