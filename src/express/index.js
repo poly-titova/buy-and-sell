@@ -12,6 +12,8 @@ const mainRoutes = require(`./routes/main-routes`);
 // Зафиксируем порт для сервера
 const DEFAULT_PORT = 8080;
 const path = require(`path`);
+const PUBLIC_DIR = `public`;
+app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 
 const app = express();
 
