@@ -10,7 +10,7 @@ const offersRouter = new Router();
 // без `offers`, т.к. уже указали при подключении модуля маршрута
 // в `index.js`.
 offersRouter.get(`/category/:id`, (req, res) => res.render(`category`));
-offersRouter.get(`/add`, (req, res) => res.send(`/offers/add`));
+offersRouter.get(`/add`, (req, res) => res.render(`new-ticket`));
 offersRouter.get(`/edit/:id`, (req, res) => res.send(`/offers/edit/:id`));
 offersRouter.get(`/:id`, (req, res) => res.send(`/offers/:id`));
 
