@@ -7,7 +7,7 @@ const mainRoutes = new Router();
 // Определяем `GET` маршруты.
 // В качестве ответа отправляем путь маршрута.
 mainRoutes.get(`/`, (req, res) => res.render(`main`));
-mainRoutes.get(`/register`, (req, res) => res.send(`/register`));
+mainRoutes.get(`/register`, (req, res) => res.render(`sign-up`));
 mainRoutes.get(`/login`, (req, res) => res.render(`login`));
 mainRoutes.get(`/search`, (req, res) => res.send(`/search`));
 
