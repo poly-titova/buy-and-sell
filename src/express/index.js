@@ -11,15 +11,19 @@ const mainRoutes = require(`./routes/main-routes`);
 
 // Зафиксируем порт для сервера
 const DEFAULT_PORT = 8080;
+
+const app = express();
+
 // Подключаем встроенный модуль path
 const path = require(`path`);
+
 // Зафиксируем название этой директории в отдельную константу и воспользуемся express.static
 const PUBLIC_DIR = `public`;
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
+
 // Сконфигурировали Express для работы с pug
 app.set(`views`, path.resolve(__dirname, `templates`));
 app.set(`view engine`, `pug`);
-const app = express();
 
 // Подключим созданные маршруты
 app.use(`/offers`, offersRoutes);
