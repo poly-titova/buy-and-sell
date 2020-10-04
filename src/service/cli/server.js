@@ -16,15 +16,5 @@ module.exports = {
   run(args) {
     const [userPort] = args;
     const port = Number(parseInt(userPort, 10)) || DEFAULT_PORT;
-
-    // запуск http-сервера
-    http.createServer(onClientConnect)
-      .listen(port)
-      .on(`listening`, (err) => {
-        if (err) {
-          return console.error(chalk.red(`Ошибка при создании сервера`, err));
-        }
-        return console.log(chalk.green(`Ожидаю соединений на ${port}`));
-      });
   }
 };
