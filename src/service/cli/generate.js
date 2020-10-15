@@ -1,5 +1,6 @@
 "use strict";
 
+const { nanoid } = require(`nanoid`);
 const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
 const { ExitCode } = require(`../constants`);
@@ -36,6 +37,7 @@ const generateOffers = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) =>
   Array(count)
     .fill({})
     .map(() => ({
+      id: nanoid(6),
       title: TITLES[getRandomInt(0, TITLES.length - 1)],
       picture: getPictureFilename(
         getRandomInt(PictureRestrict.min, PictureRestrict.max)
@@ -52,7 +54,8 @@ const generateOffers = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) =>
         Array(getRandomInt(0, COMMENTS.length - 1))
           .fill({})
           .map(() => ({
-            text: COMMENTS[getRandomInt(0, COMMENTS.length - 1)]
+            text: COMMENTS[getRandomInt(0, COMMENTS.length - 1)],
+            id: nanoid(6)
           }))
     }));
 
