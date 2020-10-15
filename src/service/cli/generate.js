@@ -21,6 +21,7 @@ const {
 const pathCategories = './data/categories.txt';
 const pathSentences = './data/sentences.txt';
 const pathTitles = './data/titles.txt';
+const pathComments = './data/comments.txt';
 
 const readFiles = async (path) => {
   try {
@@ -31,7 +32,7 @@ const readFiles = async (path) => {
   }
 }
 
-const generateOffers = (count, CATEGORIES, SENTENCES, TITLES) =>
+const generateOffers = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) =>
   Array(count)
     .fill({})
     .map(() => ({
@@ -46,7 +47,13 @@ const generateOffers = (count, CATEGORIES, SENTENCES, TITLES) =>
         Math.floor(Math.random() * Object.keys(OfferType).length)
       ],
       sum: getRandomInt(SumRestrict.min, SumRestrict.max),
-      category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]]
+      category: [CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]],
+      comments:
+        Array(getRandomInt(0, COMMENTS.length - 1))
+          .fill({})
+          .map(() => ({
+            text: COMMENTS[getRandomInt(0, COMMENTS.length - 1)]
+          }))
     }));
 
 const makeMockData = async (filename, content) => {
@@ -65,6 +72,7 @@ module.exports = {
     const CATEGORIES = await readFiles(pathCategories);
     const SENTENCES = await readFiles(pathSentences);
     const TITLES = await readFiles(pathTitles);
+    const COMMENTS = await readFiles(pathComments);
 
     if (count > MAX_COUNT) {
       console.error(chalk.red(`Не больше ${MAX_COUNT} объявлений`));
@@ -72,7 +80,7 @@ module.exports = {
     }
 
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const content = JSON.stringify(generateOffers(countOffer, CATEGORIES, SENTENCES, TITLES));
+    const content = JSON.stringify(generateOffers(countOffer, CATEGORIES, SENTENCES, TITLES, COMMENTS));
 
     makeMockData(FILE_NAME, content);
   }
