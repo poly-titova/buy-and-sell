@@ -12,6 +12,7 @@ const {
 
 const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
+const MAX_ID_LENGTH = 6;
 const FILE_NAME = `mocks.json`;
 const {
   OfferType,
@@ -54,8 +55,8 @@ const generateOffers = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) =>
         Array(getRandomInt(0, COMMENTS.length - 1))
           .fill({})
           .map(() => ({
-            text: COMMENTS[getRandomInt(0, COMMENTS.length - 1)],
-            id: nanoid(6)
+            text: shuffle(COMMENTS).slice(0, getRandomInt(1, 3)).join(``),
+            id: nanoid(MAX_ID_LENGTH)
           }))
     }));
 
