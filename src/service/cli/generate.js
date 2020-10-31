@@ -3,7 +3,7 @@
 const { nanoid } = require(`nanoid`);
 const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
-const { ExitCode } = require(`../constants`);
+const { ExitCode, MAX_ID_LENGTH } = require(`../constants`);
 const {
   getPictureFilename,
   getRandomInt,
@@ -12,7 +12,6 @@ const {
 
 const DEFAULT_COUNT = 1;
 const MAX_COUNT = 1000;
-const MAX_ID_LENGTH = 6;
 const FILE_NAME = `mocks.json`;
 const {
   OfferType,
