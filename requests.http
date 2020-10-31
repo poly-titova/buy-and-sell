@@ -1,5 +1,8 @@
 # Список всех объявлений
 GET http://localhost:3000/api/offers HTTP/1.1
 
+# Полная информация определённого объявления
+GET http://localhost:3000/api/offers/NeDf1F HTTP/1.1
+
 # Список категорий
 GET http://localhost:3000/api/category HTTP/1.1

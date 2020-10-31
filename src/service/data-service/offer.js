@@ -11,6 +11,11 @@ class OfferService {
   findAll() {
     return this._offers;
   }
+
+  // метод который получает данные только для определённого объявления
+  findOne(id) {
+    return this._offers.find((item) => item.id === id);
+  }
 };
 
 module.exports = OfferService;
