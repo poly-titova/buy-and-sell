@@ -74,4 +74,23 @@ module.exports = (app, offerService) => {
     return res.status(HttpCode.OK)
       .json(updatedOffer);
   });
+
+  // удаляет определённое объявление
+  route.delete(`/:offerId`, (req, res) => {
+    // идентификатор желаемого объявления получаем из параметров
+    const {offerId} = req.params;
+    // пользуемся возможностями сервиса offerService,
+    // который передаётся в виде аргумента
+    // вызываем метод drop, который должен 
+    // удаляет определённое объявление
+    const offer = offerService.drop(offerId);
+
+    if (!offer) {
+      return res.status(HttpCode.NOT_FOUND)
+        .send(`Not found`);
+    }
+
+    return res.status(HttpCode.OK)
+      .json(offer);
+  });
 }

@@ -32,3 +32,6 @@ Content-Type: application/json
   "sum": 900,
   "type": "offer"
 }
+
+# Удаление объявления с идентификатором￼
+DELETE http://localhost:3000/api/offers/NeDf1F HTTP/1.1
