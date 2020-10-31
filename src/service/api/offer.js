@@ -51,4 +51,27 @@ module.exports = (app, offerService) => {
     return res.status(HttpCode.CREATED)
       .json(offer);
   });
+
+  // редактирует определённое объявление
+  route.put(`/:offerId`, offerValidator, (req, res) => {
+    // идентификатор желаемого объявления получаем из параметров
+    const {offerId} = req.params;
+    // пользуемся возможностями сервиса offerService,
+    // который передаётся в виде аргумента
+    // вызываем метод findOne, который должен 
+    // вернуть информацию по определённому объявлению
+    const existOffer = offerService.findOne(offerId);
+
+    if (!existOffer) {
+      return res.status(HttpCode.NOT_FOUND)
+      .send(`Not found with ${offerId}`);
+    }
+    
+    // вызываем метод update, который должен 
+    // редактировать определённое объявление
+    const updatedOffer = offerService.update(offerId, req.body);
+
+    return res.status(HttpCode.OK)
+      .json(updatedOffer);
+  });
 }

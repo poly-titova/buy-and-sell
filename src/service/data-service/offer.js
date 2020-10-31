@@ -29,6 +29,14 @@ class OfferService {
     this._offers.push(newOffer);
     return newOffer;
   }
+
+  // метод который редактирует определённое объявление
+  update(id, offer) {
+    const oldOffer = this._offers
+      .find((item) => item.id === id);
+
+    return Object.assign(oldOffer, offer);
+  }
 };
 
 module.exports = OfferService;
