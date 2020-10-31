@@ -6,3 +6,16 @@ GET http://localhost:3000/api/offers/NeDf1F HTTP/1.1
 
 # Список категорий
 GET http://localhost:3000/api/category HTTP/1.1
+
+# Создание нового объявления
+POST http://localhost:3000/api/offers HTTP/1.1
+Content-Type: application/json
+
+{
+￼ "category": ["Разное"],
+￼ "description": "При покупке с меня бесплатная доставка в черте города. Две страницы заляпаны свежим кофе. Пользовались бережно и только по большим праздникам., Бонусом отдам все аксессуары.",
+￼ "picture": "item03.jpg",
+￼ "title": "Продам новую приставку Sony Playstation 5.",
+￼ "type": "offer",
+￼ "sum": 42698
+}
