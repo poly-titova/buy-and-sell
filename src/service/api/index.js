@@ -9,6 +9,7 @@ const getMockData = require(`../lib/get-mock-data`);
 const {
   CategoryService,
   OfferService,
+  CommentService,
 } = require(`../data-service`);
 
 const app = new Router();
@@ -17,7 +18,7 @@ const app = new Router();
   const mockData = await getMockData();
 
   category(app, new CategoryService(mockData));
-  offer(app, new OfferService(mockData));
+  offer(app, new OfferService(mockData), new CommentService());
 })();
 
 module.exports = app;

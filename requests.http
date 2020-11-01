@@ -35,3 +35,6 @@ Content-Type: application/json
 
 # Удаление объявления с идентификатором￼
 DELETE http://localhost:3000/api/offers/NeDf1F HTTP/1.1
+
+# Список комментариев определённого объявления
+GET http://localhost:3000/api/offers/NeDf1F/comments HTTP/1.1

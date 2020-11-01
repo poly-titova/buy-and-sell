@@ -3,10 +3,11 @@
 const { Router } = require(`express`);
 const { HttpCode } = require(`../constants`);
 const offerValidator = require(`../middlewares/offer-validator`);
+const offerExist = require(`../middlewares/offer-exists`);
 
 const route = new Router();
 
-module.exports = (app, offerService) => {
+module.exports = (app, offerService, commentService) => {
   app.use(`/offers`, route);
 
   // возвращает список объявлений
@@ -92,5 +93,19 @@ module.exports = (app, offerService) => {
 
     return res.status(HttpCode.OK)
       .json(offer);
+  });
+
+  // возвращает список комментариев определённого объявления
+  route.get(`/:offerId/comments`, offerExist(offerService), (req, res) => {
+    // сохраняем объявение, чтобы не искать в следующий раз
+    const {offer} = res.locals;
+    // пользуемся возможностями сервиса offerService,
+    // который передаётся в виде аргумента
+    // вызываем метод findAll, который должен 
+    // вернуть все комментарии
+    const comments = commentService.findAll(offer);
+
+    res.status(HttpCode.OK)
+      .json(comments);
   });
 }
