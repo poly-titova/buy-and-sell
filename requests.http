@@ -38,3 +38,6 @@ DELETE http://localhost:3000/api/offers/NeDf1F HTTP/1.1
 
 # Список комментариев определённого объявления
 GET http://localhost:3000/api/offers/NeDf1F/comments HTTP/1.1
+
+# Удаление из определённой публикации комментарий с идентификатором
+DELETE http://localhost:3000/api/offers/NeDf1F/comments/IP1HVz HTTP/1.1

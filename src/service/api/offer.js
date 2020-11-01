@@ -108,4 +108,26 @@ module.exports = (app, offerService, commentService) => {
     res.status(HttpCode.OK)
       .json(comments);
   });
+
+
+  // удаляет из определённой публикации комментарий с идентификатором
+  route.delete(`/:offerId/comments/:commentId`, offerExist(offerService), (req, res) => {
+    // сохраняем объявение, чтобы не искать в следующий раз
+    const {offer} = res.locals;
+    // идентификатор желаемого комментария получаем из параметров
+    const {commentId} = req.params;
+    // пользуемся возможностями сервиса offerService,
+    // который передаётся в виде аргумента
+    // вызываем метод drop, который должен 
+    // удаляет определённый комментарий
+    const deletedComment = commentService.drop(offer, commentId);
+
+    if (!deletedComment) {
+      return res.status(HttpCode.NOT_FOUND)
+        .send(`Not found`);
+    }
+    
+    return res.status(HttpCode.OK)
+      .json(deletedComment);
+  });
 }
