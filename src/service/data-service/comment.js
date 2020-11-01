@@ -1,5 +1,8 @@
 'use strict';
 
+const {nanoid} = require(`nanoid`);
+const {MAX_ID_LENGTH} = require(`../constants`);
+
 class CommentService {
   // метод который возвращает все комментарии
   findAll(offer) {
@@ -19,6 +22,17 @@ class CommentService {
       .filter((item) => item.id !== commentId);
 
     return dropComment;
+  }
+
+  // метод который создаёт новое объявление
+  // полученные данные мы просто добавляем в массив — хранилище
+  create(offer, comment) {
+    const newComment = Object.assign({
+      id: nanoid(MAX_ID_LENGTH),
+    }, comment);
+
+    offer.comments.push(newComment);
+    return comment;
   }
 }
 

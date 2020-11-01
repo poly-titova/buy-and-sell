@@ -4,6 +4,7 @@ const { Router } = require(`express`);
 const { HttpCode } = require(`../constants`);
 const offerValidator = require(`../middlewares/offer-validator`);
 const offerExist = require(`../middlewares/offer-exists`);
+const commentValidator = require(`../middlewares/comment-validator`);
 
 const route = new Router();
 
@@ -129,5 +130,19 @@ module.exports = (app, offerService, commentService) => {
     
     return res.status(HttpCode.OK)
       .json(deletedComment);
+  });
+
+  // создаёт новый комментарий
+  route.post(`/:offerId/comments`, [offerExist(offerService), commentValidator], (req, res) => {
+    // сохраняем объявение, чтобы не искать в следующий раз
+    const {offer} = res.locals;
+    // пользуемся возможностями сервиса offerService,
+    // который передаётся в виде аргумента
+    // вызываем метод drop, который должен 
+    // удаляет определённый комментарий
+    const comment = commentService.create(offer, req.body);
+
+    return res.status(HttpCode.CREATED)
+      .json(comment);
   });
 }
