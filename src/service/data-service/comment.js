@@ -4,12 +4,10 @@ const {nanoid} = require(`nanoid`);
 const {MAX_ID_LENGTH} = require(`../constants`);
 
 class CommentService {
-  // метод который возвращает все комментарии
   findAll(offer) {
     return offer.comments;
   }
 
-  // метод который удаляет из определённой публикации комментарий с идентификатором
   drop(offer, commentId) {
     const dropComment = offer.comments
       .find((item) => item.id === commentId);
@@ -24,8 +22,6 @@ class CommentService {
     return dropComment;
   }
 
-  // метод который создаёт новое объявление
-  // полученные данные мы просто добавляем в массив — хранилище
   create(offer, comment) {
     const newComment = Object.assign({
       id: nanoid(MAX_ID_LENGTH),

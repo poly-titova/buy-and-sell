@@ -1,19 +1,15 @@
 'use strict';
 
-// подключим дополнительные пакеты
 const chalk = require(`chalk`);
 const express = require(`express`);
 const fs = require(`fs`).promises;
 const routes = require(`../api`);
 const getMockData = require(`../lib/get-mock-data`);
 
-// подключим статус-коды
 const { HttpCode, API_PREFIX } = require(`../constants`);
 
-// порт по умолчанию и имя файла с моками
 const DEFAULT_PORT = 3000;
 
-// создание express сервера
 const app = express();
 
 app.use(express.json());
