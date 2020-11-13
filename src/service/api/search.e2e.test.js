@@ -135,3 +135,12 @@ describe(`API returns offer based on search query`, () => {
   test(`Offer has correct id`, () => expect(response.body[0].id).toBe(`wOpXI7`));
 
 });
+
+test(`API returns code 404 if nothing is found`,
+  () => request(app)
+    .get(`/search`)
+    .query({
+      query: `Продам свою душу`
+    })
+    .expect(HttpCode.NOT_FOUND)
+);
