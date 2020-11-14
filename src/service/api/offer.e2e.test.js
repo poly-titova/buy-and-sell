@@ -168,3 +168,35 @@ describe(`API returns an offer with given id`, () => {
   test(`Offer's title is "Отдам даром фигурки."`, () => expect(response.body.title).toBe(`Отдам даром фигурки.`));
 
 });
+
+describe(`API creates an offer if data is valid`, () => {
+
+  const newOffer = {
+    category: `Котики`,
+    title: `Дам погладить котика`,
+    description: `Дам погладить котика. Дорого. Не гербалайф`,
+    picture: `cat.jpg`,
+    type: `OFFER`,
+    sum: 100500
+  };
+  const app = createAPI();
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .post(`/offers`)
+      .send(newOffer);
+  });
+
+
+  test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.CREATED));
+
+
+  test(`Returns offer created`, () => expect(response.body).toEqual(expect.objectContaining(newOffer)));
+
+  test(`Offers count is changed`, () => request(app)
+    .get(`/offers`)
+    .expect((res) => expect(res.body.length).toBe(6))
+  );
+
+});
