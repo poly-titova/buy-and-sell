@@ -132,3 +132,39 @@ const createAPI = () => {
   offer(app, new DataService(cloneData), new CommentService());
   return app;
 };
+
+describe(`API returns a list of all offers`, () => {
+
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .get(`/offers`);
+  });
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+
+  test(`Returns a list of 5 offers`, () => expect(response.body.length).toBe(5));
+
+  test(`First offer's id equals "mzt3Cu"`, () => expect(response.body[0].id).toBe(`mzt3Cu`));
+
+});
+
+describe(`API returns an offer with given id`, () => {
+
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .get(`/offers/mzt3Cu`);
+  });
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+
+  test(`Offer's title is "Отдам даром фигурки."`, () => expect(response.body.title).toBe(`Отдам даром фигурки.`));
+
+});
