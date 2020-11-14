@@ -225,3 +225,33 @@ describe(`API refuses to create an offer if data is invalid`, () => {
   });
 
 });
+
+describe(`API changes existent offer`, () => {
+
+  const newOffer = {
+    category: `Котики`,
+    title: `Дам погладить котика`,
+    description: `Дам погладить котика. Дорого. Не гербалайф`,
+    picture: `cat.jpg`,
+    type: `OFFER`,
+    sum: 100500
+  };
+  const app = createAPI();
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .put(`/offers/mzt3Cu`)
+      .send(newOffer);
+  });
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+
+  test(`Returns changed offer`, () => expect(response.body).toEqual(expect.objectContaining(newOffer)));
+
+  test(`Offer is really changed`, () => request(app)
+    .get(`/offers/mzt3Cu`)
+    .expect((res) => expect(res.body.title).toBe(`Дам погладить котика`))
+  );
+
+});
