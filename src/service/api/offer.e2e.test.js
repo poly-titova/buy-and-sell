@@ -200,3 +200,28 @@ describe(`API creates an offer if data is valid`, () => {
   );
 
 });
+
+describe(`API refuses to create an offer if data is invalid`, () => {
+
+  const newOffer = {
+    category: `Котики`,
+    title: `Дам погладить котика`,
+    description: `Дам погладить котика. Дорого. Не гербалайф`,
+    picture: `cat.jpg`,
+    type: `OFFER`,
+    sum: 100500
+  };
+  const app = createAPI();
+
+  test(`Without any required property response code is 400`, async () => {
+    for (const key of Object.keys(newOffer)) {
+      const badOffer = {...newOffer};
+      delete badOffer[key];
+      await request(app)
+        .post(`/offers`)
+        .send(badOffer)
+        .expect(HttpCode.BAD_REQUEST);
+    }
+  });
+
+});
