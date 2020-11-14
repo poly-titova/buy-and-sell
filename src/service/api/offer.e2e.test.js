@@ -255,3 +255,40 @@ describe(`API changes existent offer`, () => {
   );
 
 });
+
+test(`API returns status code 404 when trying to change non-existent offer`, () => {
+
+  const app = createAPI();
+
+  const validOffer = {
+    category: `Это`,
+    title: `валидный`,
+    description: `объект`,
+    picture: `объявления`,
+    type: `однако`,
+    sum: 404
+  };
+
+  return request(app)
+    .put(`/offers/NOEXST`)
+    .send(validOffer)
+    .expect(HttpCode.NOT_FOUND);
+});
+
+test(`API returns status code 400 when trying to change an offer with invalid data`, () => {
+
+  const app = createAPI();
+
+  const invalidOffer = {
+    category: `Это`,
+    title: `невалидный`,
+    description: `объект`,
+    picture: `объявления`,
+    type: `нет поля sum`
+  };
+
+  return request(app)
+    .put(`/offers/NOEXST`)
+    .send(invalidOffer)
+    .expect(HttpCode.BAD_REQUEST);
+});
