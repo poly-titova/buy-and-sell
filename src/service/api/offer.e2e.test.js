@@ -324,3 +324,26 @@ test(`API refuses to delete non-existent offer`, () => {
     .expect(HttpCode.NOT_FOUND);
 
 });
+
+test(`API refuses to create a comment to non-existent offer and returns status code 404`, () => {
+
+  const app = createAPI();
+
+  return request(app)
+    .post(`/offers/NOEXST/comments`)
+    .send({
+      text: `Неважно`
+    })
+    .expect(HttpCode.NOT_FOUND);
+
+});
+
+test(`API refuses to delete non-existent comment`, () => {
+
+  const app = createAPI();
+
+  return request(app)
+    .delete(`/offers/44EqIo/comments/NOEXST`)
+    .expect(HttpCode.NOT_FOUND);
+
+});
