@@ -5,7 +5,10 @@ const chalk = require(`chalk`);
 const express = require(`express`);
 const fs = require(`fs`).promises;
 const routes = require(`../api`);
-const getMockData = require(`../lib/get-mock-data`);
+const { getLogger } = require(`../lib/logger`);
+
+// подключим логгер
+const logger = getLogger({ name: `api` });
 
 // подключим статус-коды
 const { HttpCode, API_PREFIX } = require(`../constants`);
@@ -30,18 +33,15 @@ module.exports = {
     const port = Number(parseInt(userPort, 10)) || DEFAULT_PORT;
 
     try {
-      await getMockData();
-
       app.listen(port, (err) => {
         if (err) {
-          return console.error(`Ошибка при создании сервера`, err);
-
+          return logger.error(`An error occured on server creation: ${err.message}`);
         }
 
-        return console.info(chalk.green(`Ожидаю соединений на ${port}`));
+        return logger.info(`Listening to connections on ${port}`);
       });
     } catch (err) {
-      console.error(`Произошла ошибка: ${err.message}`);
+      logger.error(`An error occured: ${err.message}`);
       process.exit(1);
     }
   }
