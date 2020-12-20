@@ -323,6 +323,25 @@ test(`API refuses to delete non-existent offer`, () => {
 
 });
 
+describe(`API returns a list of comments to given offer`, () => {
+
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .get(`/offers/44EqIo/comments`);
+  });
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+
+  test(`Returns list of 4 comments`, () => expect(response.body.length).toBe(4));
+
+  test(`First comment's id is "AwcMBU"`, () => expect(response.body[0].id).toBe(`AwcMBU`));
+
+});
+
 describe(`API creates a comment if data is valid`, () => {
 
   const newComment = {
@@ -371,6 +390,38 @@ test(`API refuses to create a comment when data is invalid, and returns status c
     .post(`/offers/44EqIo/comments`)
     .send({})
     .expect(HttpCode.BAD_REQUEST);
+
+});
+
+describe(`API correctly deletes a comment`, () => {
+
+  const app = createAPI();
+
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .delete(`/offers/44EqIo/comments/AwcMBU`);
+  });
+
+  test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
+
+  test(`Returns comment deleted`, () => expect(response.body.id).toBe(`AwcMBU`));
+
+  test(`Comments count is 3 now`, () => request(app)
+    .get(`/offers/44EqIo/comments`)
+    .expect((res) => expect(res.body.length).toBe(3))
+  );
+
+});
+
+test(`API refuses to delete non-existent comment`, () => {
+
+  const app = createAPI();
+
+  return request(app)
+    .delete(`/offers/44EqIo/comments/NOEXST`)
+    .expect(HttpCode.NOT_FOUND);
 
 });
 
