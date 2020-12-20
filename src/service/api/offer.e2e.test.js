@@ -188,9 +188,7 @@ describe(`API creates an offer if data is valid`, () => {
       .send(newOffer);
   });
 
-
   test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.CREATED));
-
 
   test(`Returns offer created`, () => expect(response.body).toEqual(expect.objectContaining(newOffer)));
 
@@ -322,6 +320,33 @@ test(`API refuses to delete non-existent offer`, () => {
   return request(app)
     .delete(`/offers/NOEXST`)
     .expect(HttpCode.NOT_FOUND);
+
+});
+
+describe(`API creates a comment if data is valid`, () => {
+
+  const newComment = {
+    text: `Валидному комментарию достаточно этого поля`
+  };
+  const app = createAPI();
+  let response;
+
+  beforeAll(async () => {
+    response = await request(app)
+      .post(`/offers/44EqIo/comments`)
+      .send(newComment);
+  });
+
+
+  test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.CREATED));
+
+
+  test(`Returns comment created`, () => expect(response.body).toEqual(expect.objectContaining(newComment)));
+
+  test(`Comments count is changed`, () => request(app)
+    .get(`/offers/44EqIo/comments`)
+    .expect((res) => expect(res.body.length).toBe(5))
+  );
 
 });
 

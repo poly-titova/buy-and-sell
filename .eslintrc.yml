@@ -6,10 +6,7 @@ env:
   node: true
   jest: true
 
-extends: 'htmlacademy/node'
-
-rules:
-  object-curly-spacing: always
-
 ignorePatterns:
   '**/express/public/**/*.js'
+
+extends: 'htmlacademy/node'
