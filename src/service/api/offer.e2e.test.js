@@ -363,6 +363,17 @@ test(`API refuses to create a comment to non-existent offer and returns status c
 
 });
 
+test(`API refuses to create a comment when data is invalid, and returns status code 400`, () => {
+
+  const app = createAPI();
+
+  return request(app)
+    .post(`/offers/44EqIo/comments`)
+    .send({})
+    .expect(HttpCode.BAD_REQUEST);
+
+});
+
 test(`API refuses to delete non-existent comment`, () => {
 
   const app = createAPI();
