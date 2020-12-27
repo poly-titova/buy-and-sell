@@ -5,7 +5,10 @@ const chalk = require(`chalk`);
 const express = require(`express`);
 const fs = require(`fs`).promises;
 const routes = require(`../api`);
-const getMockData = require(`../lib/get-mock-data`);
+const { getLogger } = require(`../lib/logger`);
+
+// подключим логгер
+const logger = getLogger({ name: `api` });
 
 // подключим статус-коды
 const { HttpCode, API_PREFIX } = require(`../constants`);
@@ -17,11 +20,28 @@ const DEFAULT_PORT = 3000;
 const app = express();
 
 app.use(express.json());
+
+// логгер фиксирует все запросы к API и коды ответа на них
+app.use((req, res, next) => {
+  logger.debug(`Request on route ${req.url}`);
+  res.on(`finish`, () => {
+    logger.info(`Response status code ${res.statusCode}`);
+  });
+  next();
+});
+
 app.use(API_PREFIX, routes);
 
-app.use((req, res) => res
-  .status(HttpCode.NOT_FOUND)
-  .send(`Not found`))
+// логгер фиксирует события, когда происходит запрос на несуществующий маршрут
+app.use((req, res) => {
+  res.status(HttpCode.NOT_FOUND)
+    .send(`Not found`);
+  logger.error(`Route not found: ${req.url}`);
+});
+
+app.use((err, _req, _res, _next) => {
+  logger.error(`An error occured on processing request: ${err.message}`);
+});
 
 module.exports = {
   name: `--server`,
@@ -30,18 +50,15 @@ module.exports = {
     const port = Number(parseInt(userPort, 10)) || DEFAULT_PORT;
 
     try {
-      await getMockData();
-
       app.listen(port, (err) => {
         if (err) {
-          return console.error(`Ошибка при создании сервера`, err);
-
+          return logger.error(`An error occured on server creation: ${err.message}`);
         }
 
-        return console.info(chalk.green(`Ожидаю соединений на ${port}`));
+        return logger.info(`Listening to connections on ${port}`);
       });
     } catch (err) {
-      console.error(`Произошла ошибка: ${err.message}`);
+      logger.error(`An error occured: ${err.message}`);
       process.exit(1);
     }
   }
