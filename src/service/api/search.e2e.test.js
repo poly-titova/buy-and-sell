@@ -1,10 +1,12 @@
+'use strict';
+
 const express = require(`express`);
 const request = require(`supertest`);
 
 const search = require(`./search`);
 const DataService = require(`../data-service/search`);
 
-const { HttpCode } = require(`../constants`);
+const {HttpCode} = require(`../constants`);
 
 const mockData = [
   {

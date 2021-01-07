@@ -12,4 +12,4 @@ const Cli = {
   [server.name]: server,
 };
 
-module.exports = { Cli };
+module.exports = {Cli};

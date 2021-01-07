@@ -1,5 +1,7 @@
+"use strict";
+
 class CategoryService {
-  // конструктор класса принимает один аргумент — offers, 
+  // конструктор класса принимает один аргумент — offers,
   // тот самый массив информации с объявлениями
   constructor(offers) {
     this._offers = offers;
