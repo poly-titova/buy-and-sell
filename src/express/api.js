@@ -1,5 +1,10 @@
 const axios = require(`axios`);
 
+const TIMEOUT = 1000;
+
+const port = process.env.API_PORT || 3000;
+const defaultUrl = `http://localhost:${port}/api/`;
+
 class API {
   constructor(baseURL, timeout){
     // создадим экземпляр axios
@@ -39,3 +44,10 @@ class API {
     });
   }
 }
+
+const defaultAPI = new API(defaultUrl, TIMEOUT);
+
+module.exports = {
+  API,
+  getAPI: () => defaultAPI
+};
