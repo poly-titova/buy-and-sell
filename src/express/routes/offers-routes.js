@@ -3,6 +3,7 @@
 // Подключаем и инициализируем экземпляр Router
 const { Router } = require(`express`);
 const offersRouter = new Router();
+const api = require(`../api`).getAPI();
 
 const multer = require(`multer`);
 const path = require(`path`);
@@ -61,7 +62,7 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
     api.getOffer(id),
     api.getCategories()
   ]);
-  res.render(`offers/ticket-edit`, {offer, categories});
+  res.render(`ticket-edit`, {offer, categories});
 });
 
 offersRouter.get(`/:id`, (req, res) => res.render(`ticket`));

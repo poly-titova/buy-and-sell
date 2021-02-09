@@ -7,14 +7,14 @@ const myRoutes = new Router();
 
 // Определяем `GET` маршруты.
 // В качестве ответа отправляем путь маршрута.
-myRouter.get(`/`, async (req, res) => {
-  const offers = await api.getOffers();
-  res.render(`my-tickets`, { offers });
+myRoutes.get(`/`, async (req, res) => {
+  const pugOffers = await api.getOffers();
+  res.render(`my-tickets`, { pugOffers });
 });
 
-myRouter.get(`/comments`, async (req, res) => {
-  const offers = await api.getOffers();
-  res.render(`comments`, { offers: offers.slice(0, 3) });
+myRoutes.get(`/comments`, async (req, res) => {
+  const pugOffers = await api.getOffers();
+  res.render(`comments`, { pugOffers: pugOffers.slice(0, 3) });
 });
 
 module.exports = myRoutes;
