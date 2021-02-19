@@ -1,7 +1,7 @@
 'use strict';
 
-const { Router } = require(`express`);
-const { HttpCode } = require(`../constants`);
+const {Router} = require(`express`);
+const {HttpCode} = require(`../constants`);
 
 const route = new Router();
 
@@ -10,7 +10,7 @@ module.exports = (app, service) => {
 
   // возвращает результаты поиска
   route.get(`/`, (req, res) => {
-    const { query = `` } = req.query;
+    const {query = ``} = req.query;
 
     if (!query) {
       res.status(HttpCode.BAD_REQUEST).json([]);
@@ -19,7 +19,7 @@ module.exports = (app, service) => {
 
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
-    // вызываем метод findAll, который должен 
+    // вызываем метод findAll, который должен
     // вернуть все результаты поиска
     const searchResults = service.findAll(query);
     const searchStatus = searchResults.length > 0 ? HttpCode.OK : HttpCode.NOT_FOUND;

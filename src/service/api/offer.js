@@ -1,21 +1,21 @@
 'use strict';
 
-const { Router } = require(`express`);
-const { HttpCode } = require(`../constants`);
+const {Router} = require(`express`);
+const {HttpCode} = require(`../constants`);
 const offerValidator = require(`../middlewares/offer-validator`);
 const offerExist = require(`../middlewares/offer-exists`);
 const commentValidator = require(`../middlewares/comment-validator`);
 
-const route = new Router();
-
 module.exports = (app, offerService, commentService) => {
+  const route = new Router();
+
   app.use(`/offers`, route);
 
   // возвращает список объявлений
   route.get(`/`, (req, res) => {
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
-    // вызываем метод findAll, который должен 
+    // вызываем метод findAll, который должен
     // вернуть все объявления
     const offers = offerService.findAll();
     res.status(HttpCode.OK).json(offers);
@@ -24,10 +24,10 @@ module.exports = (app, offerService, commentService) => {
   // возвращает полную информацию определённого объявления
   route.get(`/:offerId`, (req, res) => {
     // идентификатор желаемого объявления получаем из параметров
-    const { offerId } = req.params;
+    const {offerId} = req.params;
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
-    // вызываем метод findOne, который должен 
+    // вызываем метод findOne, который должен
     // вернуть информацию по определённому объявлению
     const offer = offerService.findOne(offerId);
 
@@ -46,7 +46,7 @@ module.exports = (app, offerService, commentService) => {
   route.post(`/`, offerValidator, (req, res) => {
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
-    // вызываем метод create, который должен 
+    // вызываем метод create, который должен
     // создаёт новое объявление
     const offer = offerService.create(req.body);
 
@@ -60,7 +60,7 @@ module.exports = (app, offerService, commentService) => {
     const {offerId} = req.params;
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
-    // вызываем метод findOne, который должен 
+    // вызываем метод findOne, который должен
     // вернуть информацию по определённому объявлению
     const existOffer = offerService.findOne(offerId);
 
@@ -68,8 +68,8 @@ module.exports = (app, offerService, commentService) => {
       return res.status(HttpCode.NOT_FOUND)
       .send(`Not found with ${offerId}`);
     }
-    
-    // вызываем метод update, который должен 
+
+    // вызываем метод update, который должен
     // редактировать определённое объявление
     const updatedOffer = offerService.update(offerId, req.body);
 
@@ -83,7 +83,7 @@ module.exports = (app, offerService, commentService) => {
     const {offerId} = req.params;
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
-    // вызываем метод drop, который должен 
+    // вызываем метод drop, который должен
     // удаляет определённое объявление
     const offer = offerService.drop(offerId);
 
@@ -102,7 +102,7 @@ module.exports = (app, offerService, commentService) => {
     const {offer} = res.locals;
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
-    // вызываем метод findAll, который должен 
+    // вызываем метод findAll, который должен
     // вернуть все комментарии
     const comments = commentService.findAll(offer);
 
@@ -119,7 +119,7 @@ module.exports = (app, offerService, commentService) => {
     const {commentId} = req.params;
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
-    // вызываем метод drop, который должен 
+    // вызываем метод drop, который должен
     // удаляет определённый комментарий
     const deletedComment = commentService.drop(offer, commentId);
 
@@ -127,7 +127,7 @@ module.exports = (app, offerService, commentService) => {
       return res.status(HttpCode.NOT_FOUND)
         .send(`Not found`);
     }
-    
+
     return res.status(HttpCode.OK)
       .json(deletedComment);
   });
@@ -138,11 +138,11 @@ module.exports = (app, offerService, commentService) => {
     const {offer} = res.locals;
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
-    // вызываем метод drop, который должен 
+    // вызываем метод drop, который должен
     // удаляет определённый комментарий
     const comment = commentService.create(offer, req.body);
 
     return res.status(HttpCode.CREATED)
       .json(comment);
   });
-}
+};

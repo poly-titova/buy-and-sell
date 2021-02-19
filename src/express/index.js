@@ -19,7 +19,12 @@ const path = require(`path`);
 
 // Зафиксируем название этой директории в отдельную константу и воспользуемся express.static
 const PUBLIC_DIR = `public`;
+
+// Зафиксируем папку для загрузки файлов
+const UPLOAD_DIR = `upload`;
+
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
+app.use(express.static(path.resolve(__dirname, UPLOAD_DIR)));
 
 // Сконфигурировали Express для работы с pug
 app.set(`views`, path.resolve(__dirname, `templates`));
