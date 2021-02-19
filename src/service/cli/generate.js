@@ -1,9 +1,9 @@
 "use strict";
 
-const { nanoid } = require(`nanoid`);
+const {nanoid} = require(`nanoid`);
 const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
-const { ExitCode, MAX_ID_LENGTH } = require(`../constants`);
+const {ExitCode, MAX_ID_LENGTH} = require(`../constants`);
 const {
   getPictureFilename,
   getRandomInt,
@@ -19,10 +19,10 @@ const {
   PictureRestrict
 } = require(`./mockData`);
 
-const pathCategories = './data/categories.txt';
-const pathSentences = './data/sentences.txt';
-const pathTitles = './data/titles.txt';
-const pathComments = './data/comments.txt';
+const pathCategories = `./data/categories.txt`;
+const pathSentences = `./data/sentences.txt`;
+const pathTitles = `./data/titles.txt`;
+const pathComments = `./data/comments.txt`;
 
 const readFiles = async (path) => {
   try {
@@ -31,7 +31,7 @@ const readFiles = async (path) => {
   } catch (err) {
     console.error(err);
   }
-}
+};
 
 const generateOffers = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) =>
   Array(count)
@@ -66,7 +66,7 @@ const makeMockData = async (filename, content) => {
   } catch (err) {
     console.error(chalk.red(`Can't write data to file`));
   }
-}
+};
 
 module.exports = {
   name: `--generate`,

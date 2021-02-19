@@ -7,7 +7,7 @@ const offer = require(`./offer`);
 const DataService = require(`../data-service/offer`);
 const CommentService = require(`../data-service/comment`);
 
-const { HttpCode } = require(`../constants`);
+const {HttpCode} = require(`../constants`);
 
 const mockData = [
   {
@@ -123,7 +123,7 @@ const mockData = [
       }
     ]
   }
-]
+];
 
 const createAPI = () => {
   const app = express();

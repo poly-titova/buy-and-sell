@@ -1,7 +1,5 @@
 "use strict";
 
-const fs = require(`fs`);
-
 const shuffle = array => {
   for (let index = array.length - 1; index > 0; index -= 1) {
     const randomPosition = Math.floor(Math.random() * index);

@@ -3,7 +3,6 @@
 // подключим дополнительные пакеты
 const chalk = require(`chalk`);
 const express = require(`express`);
-const fs = require(`fs`).promises;
 const routes = require(`../api`);
 const { getLogger } = require(`../lib/logger`);
 
@@ -21,6 +20,8 @@ const app = express();
 
 app.use(express.json());
 
+app.use(API_PREFIX, routes);
+
 // логгер фиксирует все запросы к API и коды ответа на них
 app.use((req, res, next) => {
   logger.debug(`Request on route ${req.url}`);
@@ -29,8 +30,6 @@ app.use((req, res, next) => {
   });
   next();
 });
-
-app.use(API_PREFIX, routes);
 
 // логгер фиксирует события, когда происходит запрос на несуществующий маршрут
 app.use((req, res) => {
@@ -52,13 +51,13 @@ module.exports = {
     try {
       app.listen(port, (err) => {
         if (err) {
-          return logger.error(`An error occured on server creation: ${err.message}`);
+          return logger.error(`Ошибка при создании сервера`, err);
         }
 
-        return logger.info(`Listening to connections on ${port}`);
+        return logger.info(chalk.green(`Ожидаю соединений на ${port}`));
       });
     } catch (err) {
-      logger.error(`An error occured: ${err.message}`);
+      logger.error(`Произошла ошибка: ${err.message}`);
       process.exit(1);
     }
   }
