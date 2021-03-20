@@ -1,10 +1,10 @@
 CREATE TABLE categories(
-  id integer NOT NULL,
+  id integer PRIMARY KEY,
   name varchar(255) NOT NULL
 );
 
 CREATE TABLE users(
-  id integer NOT NULL,
+  id integer PRIMARY KEY,
   email varchar(255) NOT NULL,
   password_hash varchar(255) NOT NULL,
   first_name varchar(255) NOT NULL,
@@ -13,25 +13,31 @@ CREATE TABLE users(
 );
 
 CREATE TABLE offers(
-  id integer NOT NULL,
+  id integer PRIMARY KEY,
   title varchar(255) NOT NULL,
   description text NOT NULL,
   sum integer NOT NULL,
   type varchar(5) NOT NULL,
-  picture varchar(50) NOT NULL,
+  picture varchar(50),
   user_id integer NOT NULL,
-  created_at timestamp NOT NULL
+  created_at timestamp NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE comments(
-  id integer NOT NULL,
+  id integer PRIMARY KEY,
   offer_id integer NOT NULL,
   user_id integer NOT NULL,
   text text NOT NULL,
-  created_at timestamp NOT NULL
+  created_at timestamp NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (offer_id) REFERENCES offers(id)
 );
 
 CREATE TABLE offer_categories(
   offer_id integer NOT NULL,
-  category_id integer NOT NULL
+  category_id integer NOT NULL,
+  PRIMARY KEY (offer_id, category_id),
+  FOREIGN KEY (offer_id) REFERENCES offers(id),
+  FOREIGN KEY (category_id) REFERENCES categories(id)
 );
