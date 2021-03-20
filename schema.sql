@@ -30,3 +30,8 @@ CREATE TABLE comments(
   text text NOT NULL,
   created_at timestamp NOT NULL
 );
+
+CREATE TABLE offer_categories(
+  offer_id integer NOT NULL,
+  category_id integer NOT NULL
+);
