@@ -11,7 +11,7 @@ const SumRestrict = {
 };
 
 const PictureRestrict = {
-  min: 0,
+  min: 1,
   max: 16
 };
 
