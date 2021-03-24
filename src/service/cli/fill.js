@@ -5,7 +5,7 @@ const fs = require(`fs`).promises;
 const {
   getRandomInt,
   shuffle,
-} = require(`../../utils`);
+} = require(`../utils`);
 
 const DEFAULT_COUNT = 1;
 const MAX_COMMENTS = 4;
@@ -16,10 +16,10 @@ const {
   PictureRestrict
 } = require(`./mockData`);
 
-const FILE_SENTENCES_PATH = `./data/sentences.txt`;
-const FILE_TITLES_PATH = `./data/titles.txt`;
-const FILE_CATEGORIES_PATH = `./data/categories.txt`;
-const FILE_COMMENTS_PATH = `./data/comments.txt`;
+const pathCategories = `./data/categories.txt`;
+const pathSentences = `./data/sentences.txt`;
+const pathTitles = `./data/titles.txt`;
+const pathComments = `./data/comments.txt`;
 
 const readFiles = async (path) => {
   try {
@@ -40,6 +40,8 @@ const generateComments = (count, offerId, userCount, comments) => (
   }))
 );
 
+const getPictureFileName = (number) => `item${number.toString().padStart(2, 0)}.jpg`;
+
 const generateOffers = (count, titles, categoryCount, userCount, sentences, comments) => (
   Array(count).fill({}).map((_, index) => ({
     category: [getRandomInt(1, categoryCount)],
@@ -56,10 +58,10 @@ const generateOffers = (count, titles, categoryCount, userCount, sentences, comm
 module.exports = {
   name: `--fill`,
   async run(userIndex) {
-    const CATEGORIES = await readFiles(pathCategories);
-    const SENTENCES = await readFiles(pathSentences);
-    const TITLES = await readFiles(pathTitles);
-    const COMMENTS = await readFiles(pathComments);
+    const categories = await readFiles(pathCategories);
+    const sentences = await readFiles(pathSentences);
+    const titles = await readFiles(pathTitles);
+    const commentSentences = await readFiles(pathComments);
     
     const [count] = userIndex;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
@@ -108,5 +110,30 @@ module.exports = {
         ({text, userId, offerId}) =>
           `('${text}', ${userId}, ${offerId})`
     ).join(`,\n`);
+
+    const content = `
+    INSERT INTO users(email, password_hash, first_name, last_name, avatar) VALUES
+    ${userValues};
+    INSERT INTO categories(name) VALUES
+    ${categoryValues};
+    ALTER TABLE offers DISABLE TRIGGER ALL;
+    INSERT INTO offers(title, description, type, sum, picture, user_id) VALUES
+    ${offerValues};
+    ALTER TABLE offers ENABLE TRIGGER ALL;
+    ALTER TABLE offer_categories DISABLE TRIGGER ALL;
+    INSERT INTO offer_categories(offer_id, category_id) VALUES
+    ${offerCategoryValues};
+    ALTER TABLE offer_categories ENABLE TRIGGER ALL;
+    ALTER TABLE comments DISABLE TRIGGER ALL;
+    INSERT INTO COMMENTS(text, user_id, offer_id) VALUES
+    ${commentValues};
+    ALTER TABLE comments ENABLE TRIGGER ALL;`;
+
+    try {
+      await fs.writeFile(FILE_NAME, content);
+      console.log(chalk.green(`Operation success. File created.`));          
+    } catch (err) {
+      console.error(chalk.red(`Can't write data to file...`));
+    }
   }
 };
