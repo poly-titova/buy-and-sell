@@ -20,3 +20,15 @@ INSERT INTO offers(title, description, type, sum, picture, user_id) VALUES
 ('Продам крокодиловую сумку', 'Продам сумку из крокодиловой кожи, изготовление а заказ', 'SALE', 2000, 'image5.jpg', 1);
 -- после завершения операции вставки, включим обратно
 ALTER TABLE offers ENABLE TRIGGER ALL;
+
+-- этот запрос необходим для присвоения категорий объявлениям
+ALTER TABLE offer_categories DISABLE TRIGGER ALL;
+INSERT INTO offer_categories(offer_id, category_id) VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 2),
+(3, 1),
+(4, 1),
+(5, 3);
+ALTER TABLE offer_categories ENABLE TRIGGER ALL;
