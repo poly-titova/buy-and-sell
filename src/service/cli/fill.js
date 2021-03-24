@@ -80,5 +80,33 @@ module.exports = {
         avatar: `avatar2.jpg`
       }
     ];
+
+    const offers = generateOffers(countOffer, titles, categories.length, users.length, sentences, commentSentences);
+
+    const comments = offers.flatMap((offer) => offer.comments);
+
+    const offerCategories = offers.map((offer, index) => ({offerId: index + 1, categoryId: offer.category[0]}));
+
+    const userValues = users.map(
+        ({email, passwordHash, firstName, lastName, avatar}) =>
+          `('${email}', '${passwordHash}', '${firstName}', '${lastName}', '${avatar}')`
+    ).join(`,\n`);
+
+    const categoryValues = categories.map((name) => `('${name}')`).join(`,\n`);
+
+    const offerValues = offers.map(
+        ({title, description, type, sum, picture, userId}) =>
+          `('${title}', '${description}', '${type}', ${sum}, '${picture}', ${userId})`
+    ).join(`,\n`);
+
+    const offerCategoryValues = offerCategories.map(
+        ({offerId, categoryId}) =>
+          `(${offerId}, ${categoryId})`
+    ).join(`,\n`);
+
+    const commentValues = comments.map(
+        ({text, userId, offerId}) =>
+          `('${text}', ${userId}, ${offerId})`
+    ).join(`,\n`);
   }
 };
