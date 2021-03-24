@@ -32,3 +32,18 @@ INSERT INTO offer_categories(offer_id, category_id) VALUES
 (4, 1),
 (5, 3);
 ALTER TABLE offer_categories ENABLE TRIGGER ALL;
+
+-- эти запросы необходимы для заполнения в таблицу с комментариями данными
+ALTER TABLE comments DISABLE TRIGGER ALL;
+INSERT INTO COMMENTS(text, user_id, offer_id) VALUES
+('Купи мой гараж', 2, 1),
+('Купи, кому говорю', 2, 1),
+('Плохой гараж', 1, 2),
+('Не куплю', 1, 2),
+('Купи крокодила', 1, 3),
+('Отличный крокодил', 1, 3),
+('Не куплю крокодила', 2, 4),
+('Дрянной крокодил', 2, 4),
+('Пожалей крокодила', 2, 5),
+('Держать негде', 1, 5);
+ALTER TABLE comments ENABLE TRIGGER ALL;
