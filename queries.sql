@@ -12,3 +12,18 @@ SELECT id, name, count(offer_id) FROM categories
   LEFT JOIN offer_categories
   ON id = category_id
   GROUP BY id
+
+-- запрос для построения сводной таблицы из четырёх других таблиц, примения двух агрегатных функций и сгруппирования по двум столбцам, а затем ещё и упорядочивания
+SELECT offers.*, 
+  COUNT(comments.id) AS comments_count, 
+  STRING_AGG(DISTINCT categories.name, ', ') AS category_list,
+  users.first_name,
+  users.last_name,
+  users.email
+FROM offers
+  JOIN offer_categories ON offers.id = offer_categories.offer_id
+  JOIN categories ON offer_categories.category_id = categories.id
+  LEFT JOIN comments ON comments.offer_id = offers.id
+  JOIN users ON users.id = offers.user_id
+  GROUP BY offers.id, users.id
+  ORDER BY offers.created_at DESC
