@@ -66,3 +66,8 @@ FROM comments
   JOIN users ON comments.user_id = users.id
 WHERE comments.offer_id = 1
   ORDER BY comments.created_at DESC
+
+-- запрос для получения двух объявлений о покупке
+SELECT * FROM offers
+WHERE type = 'OFFER' 
+  LIMIT 2
