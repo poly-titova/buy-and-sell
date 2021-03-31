@@ -71,3 +71,8 @@ WHERE comments.offer_id = 1
 SELECT * FROM offers
 WHERE type = 'OFFER' 
   LIMIT 2
+
+-- запрос для обновления записи
+UPDATE offers
+SET title = 'Уникальное предложение!'
+WHERE id = 1
