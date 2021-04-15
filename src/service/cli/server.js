@@ -15,6 +15,9 @@ const { HttpCode, API_PREFIX } = require(`../constants`);
 // порт по умолчанию и имя файла с моками
 const DEFAULT_PORT = 3000;
 
+// импортируем модуль
+const sequelize = require(`../lib/sequelize`);
+
 // создание express сервера
 const app = express();
 
@@ -45,6 +48,12 @@ app.use((err, _req, _res, _next) => {
 module.exports = {
   name: `--server`,
   async run(args) {
+    try {
+      await sequelize.authenticate();
+    } catch (err) {
+      process.exit(1);
+    }
+
     const [userPort] = args;
     const port = Number(parseInt(userPort, 10)) || DEFAULT_PORT;
 
