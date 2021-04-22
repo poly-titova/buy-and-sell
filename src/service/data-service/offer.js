@@ -1,53 +1,45 @@
-'use strict';
+"use strict";
 
-const {nanoid} = require(`nanoid`);
-const {MAX_ID_LENGTH} = require(`../constants`);
+const Aliase = require(`../models/aliase`);
 
 class OfferService {
-  // конструктор принимает данные о всех объявлениях
-  // и сохраняет их в одноимённое приватное свойство
-  constructor(offers) {
-    this._offers = offers;
+  constructor(sequelize) {
+    this._Offer = sequelize.models.Offer;
+    this._Comment = sequelize.models.Comment;
+    this._Category = sequelize.models.Category;
   }
 
-  // метод который возвращает все объявления
-  findAll() {
-    return this._offers;
+  async create(offerData) {
+    const offer = await this._Offer.create(offerData);
+    await offer.addCategories(offerData.categories);
+    return offer.get();
   }
 
-  // метод который получает данные только для определённого объявления
+  async drop(id) {
+    const deletedRows = await this._Offer.destroy({
+      where: {id}
+    });
+    return !!deletedRows;
+  }
+
   findOne(id) {
-    return this._offers.find((item) => item.id === id);
+    return this._Offer.findByPk(id, {include: [Aliase.CATEGORIES]});
   }
 
-  // метод который создаёт новое объявление
-  // полученные данные мы просто добавляем в массив — хранилище
-  create(offer) {
-    const newOffer = Object
-      .assign({id: nanoid(MAX_ID_LENGTH), comments: []}, offer);
-
-    this._offers.push(newOffer);
-    return newOffer;
+  async update(id, offer) {
+    const [affectedRows] = await this._Offer.update(offer, {
+      where: {id}
+    });
+    return !!affectedRows;
   }
 
-  // метод который редактирует определённое объявление
-  update(id, offer) {
-    const oldOffer = this._offers
-      .find((item) => item.id === id);
-
-    return Object.assign(oldOffer, offer);
-  }
-
-  // метод который удаляет определённое объявление
-  drop(id) {
-    const offer = this._offers.find((item) => item.id === id);
-
-    if (!offer) {
-      return null;
+  async findAll(needComments) {
+    const include = [Aliase.CATEGORIES];
+    if (needComments) {
+      include.push(Aliase.COMMENTS);
     }
-
-    this._offers = this._offers.filter((item) => item.id !== id);
-    return offer;
+    const offers = await this._Offer.findAll({include});
+    return offers.map((item) => item.get());
   }
 }
 
