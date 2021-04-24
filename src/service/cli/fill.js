@@ -2,9 +2,6 @@
 
 const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
-const sequelize = require(`../lib/sequelize`);
-const defineModels = require(`../models`);
-const Aliase = require(`../models/aliase`);
 const {
   getRandomInt,
   shuffle,
@@ -45,23 +42,9 @@ const generateComments = (count, offerId, userCount, comments) => (
 
 const getPictureFileName = (number) => `item${number.toString().padStart(2, 0)}.jpg`;
 
-const getRandomSubarray = (items) => {
-  items = items.slice();
-  let count = getRandomInt(1, items.length - 1);
-  const result = [];
-  while (count--) {
-    result.push(
-        ...items.splice(
-            getRandomInt(0, items.length - 1), 1
-        )
-    );
-  }
-  return result;
-};
-
-const generateOffers = (count, titles, categories, userCount, sentences, comments) => (
+const generateOffers = (count, titles, categoryCount, userCount, sentences, comments) => (
   Array(count).fill({}).map((_, index) => ({
-    categories: getRandomSubarray(categories),
+    category: [getRandomInt(1, categoryCount)],
     comments: generateComments(getRandomInt(1, MAX_COMMENTS), index + 1, userCount, comments),
     description: shuffle(sentences).slice(1, 5).join(` `),
     picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
@@ -75,27 +58,10 @@ const generateOffers = (count, titles, categories, userCount, sentences, comment
 module.exports = {
   name: `--fill`,
   async run(userIndex) {
-    try {
-      logger.info(`Trying to connect to database...`);
-      await sequelize.authenticate();
-    } catch (err) {
-      logger.error(`An error occured: ${err.message}`);
-      process.exit(1);
-    }
-    logger.info(`Connection to database established`);
-    
-    const {Category, Offer} = defineModels(sequelize);
-
-    await sequelize.sync({force: true});
-
     const categories = await readFiles(pathCategories);
     const sentences = await readFiles(pathSentences);
     const titles = await readFiles(pathTitles);
-    const comments = await readFiles(pathComments);
-
-    const categoryModels = await Category.bulkCreate(
-      categories.map((item) => ({name: item}))
-    );
+    const commentSentences = await readFiles(pathComments);
     
     const [count] = userIndex;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
@@ -117,14 +83,9 @@ module.exports = {
       }
     ];
 
-    const offers = generateOffers(countOffer, titles, categoryModels, sentences, comments);
-    const comments = offers.flatMap((offer) => offer.comments);
+    const offers = generateOffers(countOffer, titles, categories.length, users.length, sentences, commentSentences);
 
-    const offerPromises = offers.map(async (offer) => {
-      const offerModel = await Offer.create(offer, {include: [Aliase.COMMENTS]});
-      await offerModel.addCategories(offer.categories);
-    });
-    await Promise.all(offerPromises);
+    const comments = offers.flatMap((offer) => offer.comments);
 
     const offerCategories = offers.map((offer, index) => ({offerId: index + 1, categoryId: offer.category[0]}));
 
