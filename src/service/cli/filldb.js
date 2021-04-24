@@ -8,12 +8,10 @@ const {
 } = require(`../utils`);
 const { getLogger } = require(`../lib/logger`);
 const sequelize = require(`../lib/sequelize`);
-const defineModels = require(`../models`);
-const Aliase = require(`../models/aliase`);
-const { ExitCode, MAX_ID_LENGTH } = require(`../constants`);
+const initDatabase = require(`../lib/init-db`);
 
 const DEFAULT_COUNT = 1;
-const MAX_COUNT = 1000;
+const MAX_COMMENTS = 4;
 
 const pathCategories = `./data/categories.txt`;
 const pathSentences = `./data/sentences.txt`;
@@ -76,13 +74,7 @@ const generateOffers = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS) =>
       ],
       sum: getRandomInt(SumRestrict.min, SumRestrict.max),
       categories: getRandomSubarray(CATEGORIES),
-      comments:
-        Array(getRandomInt(0, COMMENTS.length - 1))
-          .fill({})
-          .map(() => ({
-            text: shuffle(COMMENTS).slice(0, getRandomInt(1, 3)).join(``),
-            id: nanoid(MAX_ID_LENGTH)
-          }))
+      comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments),
     }));
 
 module.exports = {
@@ -97,25 +89,15 @@ module.exports = {
     }
     logger.info(`Connection to database established`);
 
-    const { Category, Offer } = defineModels(sequelize);
-    await sequelize.sync({ force: true });
-
     const CATEGORIES = await readFiles(pathCategories);
     const SENTENCES = await readFiles(pathSentences);
     const TITLES = await readFiles(pathTitles);
     const COMMENTS = await readFiles(pathComments);
 
-    const categoryModels = await Category.bulkCreate(
-      CATEGORIES.map((item) => ({ name: item }))
-    );
-
     const [count] = userIndex;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const offers = generateOffers(countOffer, TITLES, categoryModels, SENTENCES, COMMENTS);
-    const offerPromises = offers.map(async (offer) => {
-      const offerModel = await Offer.create(offer, { include: [Aliase.COMMENTS] });
-      await offerModel.addCategories(offer.CATEGORIES);
-    });
-    await Promise.all(offerPromises);
+    const offers = generateOffers(countOffer, TITLES, CATEGORIES, SENTENCES, COMMENTS);
+
+    return initDatabase(sequelize, {offers, categories});
   }
 };
