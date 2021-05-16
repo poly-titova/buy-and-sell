@@ -17,18 +17,18 @@ class OfferService {
 
   async drop(id) {
     const deletedRows = await this._Offer.destroy({
-      where: {id}
+      where: { id }
     });
     return !!deletedRows;
   }
 
   findOne(id) {
-    return this._Offer.findByPk(id, {include: [Aliase.CATEGORIES]});
+    return this._Offer.findByPk(id, { include: [Aliase.CATEGORIES] });
   }
 
   async update(id, offer) {
     const [affectedRows] = await this._Offer.update(offer, {
-      where: {id}
+      where: { id }
     });
     return !!affectedRows;
   }
@@ -38,8 +38,18 @@ class OfferService {
     if (needComments) {
       include.push(Aliase.COMMENTS);
     }
-    const offers = await this._Offer.findAll({include});
+    const offers = await this._Offer.findAll({ include });
     return offers.map((item) => item.get());
+  }
+
+  async findPage({ limit, offset }) {
+    const { count, rows } = await this._Offer.findAndCountAll({
+      limit,
+      offset,
+      include: [Aliases.CATEGORIES],
+      distinct: true
+    });
+    return { count, offers: rows };
   }
 }
 
