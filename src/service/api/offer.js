@@ -2,6 +2,7 @@
 
 const { Router } = require(`express`);
 const { HttpCode } = require(`../constants`);
+const schema = require(`../lib/schema`);
 const offerValidator = require(`../middlewares/offer-validator`);
 const offerExist = require(`../middlewares/offer-exists`);
 const commentValidator = require(`../middlewares/comment-validator`);
@@ -46,12 +47,17 @@ module.exports = (app, offerService, commentService) => {
   });
 
   // создаёт новое объявление
-  route.post(`/`, offerValidator, async (req, res) => {
+  route.post(`/`, offerValidator(schema), async (req, res) => {
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
     // вызываем метод create, который должен
     // создаёт новое объявление
     const offer = await offerService.create(req.body);
+    const { body } = req;
+    res.json({
+      message: `A new offer created.`,
+      data: body
+    });
 
     return res.status(HttpCode.CREATED)
       .json(offer);
