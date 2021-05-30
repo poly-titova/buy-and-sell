@@ -4,6 +4,7 @@ const { Router } = require(`express`);
 const { HttpCode } = require(`../constants`);
 const schema = require(`../lib/schema`);
 const offerValidator = require(`../middlewares/offer-validator`);
+const validation = require(`../middlewares/validation`)
 const offerExist = require(`../middlewares/offer-exists`);
 const commentValidator = require(`../middlewares/comment-validator`);
 
@@ -47,20 +48,24 @@ module.exports = (app, offerService, commentService) => {
   });
 
   // создаёт новое объявление
-  route.post(`/`, offerValidator(schema), async (req, res) => {
+  route.post(`/`, offerValidator, async (req, res) => {
     // пользуемся возможностями сервиса offerService,
     // который передаётся в виде аргумента
     // вызываем метод create, который должен
     // создаёт новое объявление
     const offer = await offerService.create(req.body);
+
+    return res.status(HttpCode.CREATED)
+      .json(offer);
+  });
+
+  // -----
+  route.post(`/`, validation(schema), async (req, res) => {
     const { body } = req;
     res.json({
       message: `A new offer created.`,
       data: body
     });
-
-    return res.status(HttpCode.CREATED)
-      .json(offer);
   });
 
   // редактирует определённое объявление

@@ -9,7 +9,7 @@ module.exports = Joi.object({
     .required(),
   
   picture: Joi.string()
-    .pattern(`jpg`, `png`)
+    .pattern(new RegExp({tlds: { allow: ['png', 'jpg'] } }))
     .required(),
 
   description: Joi.string()
@@ -25,7 +25,7 @@ module.exports = Joi.object({
     .min(100)
     .required(),
 
-  category: Joi.string()
+  category: Joi.array()
     .items(Joi.string())
     .min(1)
     .required(),
