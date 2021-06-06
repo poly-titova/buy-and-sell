@@ -48,11 +48,6 @@ app.use((err, _req, _res, _next) => {
 module.exports = {
   name: `--server`,
   async run(args) {
-    try {
-      await sequelize.authenticate();
-    } catch (err) {
-      process.exit(1);
-    }
 
     try {
       logger.info(`Trying to connect to database...`);
