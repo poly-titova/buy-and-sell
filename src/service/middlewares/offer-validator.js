@@ -4,7 +4,7 @@ const {HttpCode} = require(`../constants`);
 
 const offerKeys = [`category`, `description`, `picture`, `title`, `type`, `sum`];
 
-module.exports = (req, res, next) => {
+module.exports = (req, res, next, schema) => {
   const newOffer = req.body;
   const keys = Object.keys(newOffer);
   const keysExists = offerKeys.every((key) => keys.includes(key));

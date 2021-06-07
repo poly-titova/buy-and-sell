@@ -2,7 +2,10 @@
 
 const { Router } = require(`express`);
 const { HttpCode } = require(`../constants`);
+const schema = require(`../lib/schema`);
+const commentSchema = require(`../lib/comment-schema`);
 const offerValidator = require(`../middlewares/offer-validator`);
+const validation = require(`../middlewares/validation`)
 const offerExist = require(`../middlewares/offer-exists`);
 const commentValidator = require(`../middlewares/comment-validator`);
 
@@ -57,6 +60,15 @@ module.exports = (app, offerService, commentService) => {
       .json(offer);
   });
 
+  // -----
+  route.post(`/`, validation(schema), async (req, res) => {
+    const { body } = req;
+    res.json({
+      message: `A new offer created.`,
+      data: body
+    });
+  });
+
   // редактирует определённое объявление
   route.put(`/:offerId`, offerValidator, async (req, res) => {
     // идентификатор желаемого объявления получаем из параметров
@@ -74,6 +86,15 @@ module.exports = (app, offerService, commentService) => {
 
     return res.status(HttpCode.OK)
       .send(`Updated`);
+  });
+
+  // -----
+  route.put(`/:offerId`, validation(schema), async (req, res) => {
+    const { body } = req;
+    res.json({
+      message: `A offer updated.`,
+      data: body
+    });
   });
 
   // удаляет определённое объявление
@@ -141,5 +162,14 @@ module.exports = (app, offerService, commentService) => {
 
     return res.status(HttpCode.CREATED)
       .json(comment);
+  });
+
+  // -----
+  route.post(`/:offerId/comments`, validation(commentSchema), async (req, res) => {
+    const { body } = req;
+    res.json({
+      message: `A new comment created.`,
+      data: body
+    });
   });
 };
