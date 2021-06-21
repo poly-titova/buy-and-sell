@@ -30,8 +30,9 @@ const storage = multer.diskStorage({
 // в `index.js`.
 offersRouter.get(`/category/:id`, (req, res) => res.render(`category`));
 offersRouter.get(`/add`, async (req, res) => {
+  const { error } = req.query;
   const categories = await api.getCategories();
-  res.render(`new-ticket`, { categories });
+  res.render(`offers/new-ticket`, { categories, error });
 });
 
 const upload = multer({ storage });
@@ -50,7 +51,7 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
     await api.createOffer(offerData);
     res.redirect(`/my`);
   } catch (error) {
-    res.redirect(`back`);
+    res.redirect(`/offers/add?error=${encodeURIComponent(error.response.data)}`);
   }
 });
 
@@ -64,9 +65,9 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
 });
 
 offersRouter.get(`/:id`, async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   const offer = await api.getOffer(id, true);
-  res.render(`offers/ticket`, {offer});
+  res.render(`offers/ticket`, { offer });
 });
 
 module.exports = offersRouter;

@@ -60,15 +60,6 @@ module.exports = (app, offerService, commentService) => {
       .json(offer);
   });
 
-  // -----
-  route.post(`/`, validation(schema), async (req, res) => {
-    const { body } = req;
-    res.json({
-      message: `A new offer created.`,
-      data: body
-    });
-  });
-
   // редактирует определённое объявление
   route.put(`/:offerId`, offerValidator, async (req, res) => {
     // идентификатор желаемого объявления получаем из параметров
@@ -86,15 +77,6 @@ module.exports = (app, offerService, commentService) => {
 
     return res.status(HttpCode.OK)
       .send(`Updated`);
-  });
-
-  // -----
-  route.put(`/:offerId`, validation(schema), async (req, res) => {
-    const { body } = req;
-    res.json({
-      message: `A offer updated.`,
-      data: body
-    });
   });
 
   // удаляет определённое объявление
