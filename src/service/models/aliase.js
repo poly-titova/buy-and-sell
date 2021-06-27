@@ -5,5 +5,6 @@ module.exports = {
   // эти алиасы пригодятся в дальнейшем
   OFFERS: `offers`,
   CATEGORIES: `categories`,
-  OFFER_CATEGORIES: `offerCategories`
+  OFFER_CATEGORIES: `offerCategories`,
+  USER: `user`
 };

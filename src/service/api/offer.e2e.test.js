@@ -9,7 +9,7 @@ const offer = require(`./offer`);
 const DataService = require(`../data-service/offer`);
 const CommentService = require(`../data-service/comment`);
 
-const {HttpCode} = require(`../../constants`);
+const { HttpCode } = require(`../constants`);
 
 const mockCategories = [
   `Животные`,
@@ -21,21 +21,26 @@ const mockCategories = [
 
 const mockOffers = [
   {
+    "user": `ivanov@example.com`,
     "categories": [
       `Животные`,
       `Марки`,
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": `Неплохо, но дорого. Оплата наличными или перевод на карту? Продаю в связи с переездом. Отрываю от сердца.`
       },
       {
+        "user": `petrov@example.com`,
         "text": `А где блок питания? Неплохо, но дорого.`
       },
       {
+        "user": `ivanov@example.com`,
         "text": `Оплата наличными или перевод на карту?`
       },
       {
+        "user": `petrov@example.com`,
         "text": `Продаю в связи с переездом. Отрываю от сердца. С чем связана продажа? Почему так дешёво? Оплата наличными или перевод на карту?`
       }
     ],
@@ -46,17 +51,21 @@ const mockOffers = [
     "sum": 10405
   },
   {
+    "user": `ivanov@example.com`,
     "categories": [
       `Посуда`
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": `Почему в таком ужасном состоянии?`
       },
       {
+        "user": `ivanov@example.com`,
         "text": `Продаю в связи с переездом. Отрываю от сердца.`
       },
       {
+        "user": `petrov@example.com`,
         "text": `С чем связана продажа? Почему так дешёво? Вы что?! В магазине дешевле. Оплата наличными или перевод на карту?`
       }
     ],
@@ -67,17 +76,20 @@ const mockOffers = [
     "sum": 96693
   },
   {
+    "user": `petrov@example.com`,
     "categories": [
       `Марки`
     ],
     "comments": [
       {
+        "user": `petrov@example.com`,
         "text": `А сколько игр в комплекте? Почему в таком ужасном состоянии?`
       },
       {
         "text": `Продаю в связи с переездом. Отрываю от сердца. Вы что?! В магазине дешевле.`
       },
       {
+        "user": `petrov@example.com`,
         "text": `Совсем немного... Почему в таком ужасном состоянии?`
       },
       {
@@ -91,6 +103,7 @@ const mockOffers = [
     "sum": 54666
   },
   {
+    "user": `petrov@example.com`,
     "categories": [
       `Разное`,
       `Марки`,
@@ -98,6 +111,7 @@ const mockOffers = [
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": `А сколько игр в комплекте? Продаю в связи с переездом. Отрываю от сердца.`
       }
     ],
@@ -108,11 +122,13 @@ const mockOffers = [
     "sum": 29392
   },
   {
+    "user": `petrov@example.com`,
     "categories": [
       `Книги`
     ],
     "comments": [
       {
+        "user": `ivanov@example.com`,
         "text": `Продаю в связи с переездом. Отрываю от сердца.`
       }
     ],
@@ -125,8 +141,8 @@ const mockOffers = [
 ];
 
 const createAPI = async () => {
-  const mockDB = new Sequelize(`sqlite::memory:`, {logging: false});
-  await initDB(mockDB, {categories: mockCategories, offers: mockOffers});
+  const mockDB = new Sequelize(`sqlite::memory:`, { logging: false });
+  await initDB(mockDB, { categories: mockCategories, offers: mockOffers });
   const app = express();
   app.use(express.json());
   offer(app, new DataService(mockDB), new CommentService(mockDB));
@@ -217,7 +233,7 @@ describe(`API refuses to create an offer if data is invalid`, () => {
 
   test(`Without any required property response code is 400`, async () => {
     for (const key of Object.keys(newOffer)) {
-      const badOffer = {...newOffer};
+      const badOffer = { ...newOffer };
       delete badOffer[key];
       await request(app)
         .post(`/offers`)
@@ -338,7 +354,7 @@ describe(`API returns a list of comments to given offer`, () => {
   test(`Returns list of 3 comments`, () => expect(response.body.length).toBe(3));
 
   test(`First comment's text is "Почему в таком ужасном состоянии?"`,
-      () => expect(response.body[0].text).toBe(`Почему в таком ужасном состоянии?`));
+    () => expect(response.body[0].text).toBe(`Почему в таком ужасном состоянии?`));
 
 });
 
@@ -433,9 +449,9 @@ test(`API refuses to delete a comment to non-existent offer`, async () => {
 
 test(`When field type is wrong response code is 400`, async () => {
   const badOffers = [
-    {...newOffer, sum: true},
-    {...newOffer, picture: 12345},
-    {...newOffer, categories: `Котики`}
+    { ...newOffer, sum: true },
+    { ...newOffer, picture: 12345 },
+    { ...newOffer, categories: `Котики` }
   ];
   for (const badOffer of badOffers) {
     await request(app)
@@ -447,9 +463,9 @@ test(`When field type is wrong response code is 400`, async () => {
 
 test(`When field value is wrong response code is 400`, async () => {
   const badOffers = [
-    {...newOffer, sum: -1},
-    {...newOffer, title: `too short`},
-    {...newOffer, categories: []}
+    { ...newOffer, sum: -1 },
+    { ...newOffer, title: `too short` },
+    { ...newOffer, categories: [] }
   ];
   for (const badOffer of badOffers) {
     await request(app)
