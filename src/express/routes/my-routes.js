@@ -3,7 +3,9 @@
 // Подключаем и инициализируем экземпляр Router
 const { Router } = require(`express`);
 const api = require(`../api`).getAPI();
+const auth = require(`../middlewares/auth`);
 const myRoutes = new Router();
+myRoutes.use(auth);
 
 // Определяем `GET` маршруты.
 // В качестве ответа отправляем путь маршрута.

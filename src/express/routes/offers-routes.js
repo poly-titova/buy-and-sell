@@ -4,6 +4,8 @@
 const { Router } = require(`express`);
 const offersRouter = new Router();
 const api = require(`../api`).getAPI();
+const auth = require(`../middlewares/auth`);
+const { ensureArray } = require(`../../utils`);
 
 const multer = require(`multer`);
 const path = require(`path`);
@@ -33,7 +35,7 @@ offersRouter.get(`/category/:id`, (req, res) => {
   res.render(`category`, { user });
 });
 
-offersRouter.get(`/add`, async (req, res) => {
+offersRouter.get(`/add`, auth, async (req, res) => {
   const { error } = req.query;
   const { user } = req.session;
   const categories = await api.getCategories();
@@ -42,7 +44,7 @@ offersRouter.get(`/add`, async (req, res) => {
 
 const upload = multer({ storage });
 
-offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
+offersRouter.post(`/add`, auth, upload.single(`avatar`), async (req, res) => {
   const { user } = req.session;
   const { body, file } = req;
   const offerData = {
@@ -62,7 +64,7 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
   }
 });
 
-offersRouter.get(`/edit/:id`, async (req, res) => {
+offersRouter.get(`/edit/:id`, auth, async (req, res) => {
   const { id } = req.params;
   const { user } = req.session;
   const { error } = req.query;
@@ -73,7 +75,7 @@ offersRouter.get(`/edit/:id`, async (req, res) => {
   res.render(`offers/ticket-edit`, { id, offer, categories, user, error });
 });
 
-offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+offersRouter.post(`/edit/:id`, auth, upload.single(`avatar`), async (req, res) => {
   const { body, file } = req;
   const { user } = req.session;
   const { id } = req.params;
@@ -102,7 +104,7 @@ offersRouter.get(`/:id`, async (req, res) => {
   res.render(`offers/ticket`, { offer, id, user, error });
 });
 
-offersRouter.post(`/:id/comments`, async (req, res) => {
+offersRouter.post(`/:id/comments`, auth, async (req, res) => {
   const { id } = req.params;
   const { comment } = req.body;
   const { user } = req.session;
