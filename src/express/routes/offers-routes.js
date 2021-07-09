@@ -28,11 +28,16 @@ const storage = multer.diskStorage({
 // Следует помнить, что в первом параметре мы указываем путь маршрута
 // без `offers`, т.к. уже указали при подключении модуля маршрута
 // в `index.js`.
-offersRouter.get(`/category/:id`, (req, res) => res.render(`category`));
+offersRouter.get(`/category/:id`, (req, res) => {
+  const { user } = req.session;
+  res.render(`category`, { user });
+});
+
 offersRouter.get(`/add`, async (req, res) => {
   const { error } = req.query;
+  const { user } = req.session;
   const categories = await api.getCategories();
-  res.render(`offers/new-ticket`, { categories, error });
+  res.render(`offers/new-ticket`, { categories, error, user });
 });
 
 const upload = multer({ storage });
@@ -59,16 +64,18 @@ offersRouter.post(`/add`, upload.single(`avatar`), async (req, res) => {
 
 offersRouter.get(`/edit/:id`, async (req, res) => {
   const { id } = req.params;
+  const { user } = req.session;
   const { error } = req.query;
   const [offer, categories] = await Promise.all([
     api.getOffer(id),
     api.getCategories()
   ]);
-  res.render(`offers/ticket-edit`, { id, offer, categories, error });
+  res.render(`offers/ticket-edit`, { id, offer, categories, user, error });
 });
 
 offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
   const { body, file } = req;
+  const { user } = req.session;
   const { id } = req.params;
   const offerData = {
     picture: file ? file.filename : body[`old-image`],
@@ -88,18 +95,20 @@ offersRouter.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
 });
 
 offersRouter.get(`/:id`, async (req, res) => {
-  const {id} = req.params;
-  const {error} = req.query;
+  const { user } = req.session;
+  const { id } = req.params;
+  const { error } = req.query;
   const offer = await api.getOffer(id, true);
-  res.render(`offers/ticket`, {offer, id, error});
+  res.render(`offers/ticket`, { offer, id, user, error });
 });
 
 offersRouter.post(`/:id/comments`, async (req, res) => {
-  const {id} = req.params;
-  const {comment} = req.body;
+  const { id } = req.params;
+  const { comment } = req.body;
+  const { user } = req.session;
 
   try {
-    await api.createComment(id, {text: comment});
+    await api.createComment(id, { userId: user.id, text: comment });
     res.redirect(`/offers/${id}`);
   } catch (error) {
     res.redirect(`/offers/${id}?error=${encodeURIComponent(error.response.data)}`);

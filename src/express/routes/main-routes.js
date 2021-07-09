@@ -61,6 +61,7 @@ mainRoutes.post(`/register`, upload.single(`avatar`), async (req, res) => {
 
 mainRoutes.get(`/login`, (req, res) => {
   const { error } = req.query;
+  const { user } = req.session;
   res.render(`login`, { error });
 });
 
