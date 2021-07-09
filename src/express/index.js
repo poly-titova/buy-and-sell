@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require(`express`);
+const SequelizeStore = require(`connect-session-sequelize`)(session.Store);
 
 // Маршруты приложения мы опишем в отдельных файлах.
 // Для определения маршрутов мы воспользуемся Router().
@@ -17,11 +18,39 @@ const app = express();
 // Подключаем встроенный модуль path
 const path = require(`path`);
 
+// Подключили sequelize
+const sequelize = require(`../service/lib/sequelize`);
+
 // Зафиксируем название этой директории в отдельную константу и воспользуемся express.static
 const PUBLIC_DIR = `public`;
 
 // Зафиксируем папку для загрузки файлов
 const UPLOAD_DIR = `upload`;
+
+// Указали, где хранится шифрования сессионных данных
+const { SESSION_SECRET } = process.env;
+if (!SESSION_SECRET) {
+    throw new Error(`SESSION_SECRET environment variable is not defined`);
+}
+
+// Добавили сессии
+const mySessionStore = new SequelizeStore({
+    db: sequelize,
+    expiration: 180000,
+    checkExpirationInterval: 60000
+});
+
+sequelize.sync({ force: false });
+
+app.use(express.urlencoded({ extended: false }));
+
+app.use(session({
+    secret: SESSION_SECRET,
+    store: mySessionStore,
+    resave: false,
+    proxy: true,
+    saveUninitialized: false,
+  }));
 
 app.use(express.static(path.resolve(__dirname, PUBLIC_DIR)));
 app.use(express.static(path.resolve(__dirname, UPLOAD_DIR)));
