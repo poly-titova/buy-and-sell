@@ -8,7 +8,7 @@ const initDB = require(`../lib/init-db`);
 const user = require(`./user`);
 const DataService = require(`../data-service/user`);
 
-const { HttpCode } = require(`../constants`);
+const { HttpCode } = require(`../../constants`);
 
 const mockCategories = [
   `Животные`,

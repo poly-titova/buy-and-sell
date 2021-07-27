@@ -5,7 +5,7 @@ const fs = require(`fs`).promises;
 const {
   getRandomInt,
   shuffle,
-} = require(`../utils`);
+} = require(`../../utils`);
 
 const DEFAULT_COUNT = 1;
 const MAX_COMMENTS = 4;

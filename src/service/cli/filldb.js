@@ -5,7 +5,7 @@ const {
   getPictureFilename,
   getRandomInt,
   shuffle
-} = require(`../utils`);
+} = require(`../../utils`);
 const { getLogger } = require(`../lib/logger`);
 const sequelize = require(`../lib/sequelize`);
 const initDatabase = require(`../lib/init-db`);

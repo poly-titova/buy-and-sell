@@ -8,7 +8,7 @@ const initDB = require(`../lib/init-db`);
 const search = require(`./search`);
 const DataService = require(`../data-service/search`);
 
-const { HttpCode } = require(`../constants`);
+const { HttpCode } = require(`../../constants`);
 
 const mockCategories = [
   `Книги`,

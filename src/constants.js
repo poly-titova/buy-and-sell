@@ -1,19 +1,14 @@
-"use strict";
+'use strict';
 
-const DEFAULT_COMMAND = `--help`;
-const USER_ARGV_INDEX = 2;
-const ExitCode = {
+module.exports.DEFAULT_COMMAND = `--help`;
+
+module.exports.USER_ARGV_INDEX = 2;
+
+module.exports.ExitCode = {
+  error: 1,
   success: 0,
-  fail: 1
 };
 
-module.exports = {
-  DEFAULT_COMMAND,
-  USER_ARGV_INDEX,
-  ExitCode
-};
-
-// описали различные статус-коды
 module.exports.HttpCode = {
   OK: 200,
   CREATED: 201,
@@ -29,9 +24,10 @@ module.exports.HttpMethod = {
   POST: `POST`,
   PUT: `PUT`,
   DELETE: `DELETE`
-}
+};
 
 module.exports.API_PREFIX = `/api`;
+
 module.exports.MAX_ID_LENGTH = 6;
 
 module.exports.Env = {

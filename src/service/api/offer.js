@@ -1,7 +1,7 @@
 'use strict';
 
 const { Router } = require(`express`);
-const { HttpCode } = require(`../constants`);
+const { HttpCode } = require(`../../constants`);
 const offerValidator = require(`../middlewares/offer-validator`);
 const offerExist = require(`../middlewares/offer-exists`);
 const commentValidator = require(`../middlewares/comment-validator`);
