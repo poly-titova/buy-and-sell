@@ -7,25 +7,8 @@ const api = require(`../api`).getAPI();
 const auth = require(`../middlewares/auth`);
 const { ensureArray } = require(`../../utils`);
 
-const multer = require(`multer`);
-const path = require(`path`);
-const { nanoid } = require(`nanoid`);
 const csrf = require(`csurf`);
 const csrfProtection = csrf();
-
-const UPLOAD_DIR = `../upload/img/`;
-
-const uploadDirAbsolute = path.resolve(__dirname, UPLOAD_DIR);
-
-// Создали хранилище с помощью метода multer.diskStorage
-const storage = multer.diskStorage({
-  destination: uploadDirAbsolute,
-  filename: (req, file, cb) => {
-    const uniqueName = nanoid(10);
-    const extension = file.originalname.split(`.`).pop();
-    cb(null, `${uniqueName}.${extension}`);
-  }
-});
 
 // Определяем `GET` маршруты.
 // В качестве ответа отправляем путь маршрута.
@@ -44,7 +27,7 @@ offersRouter.get(`/add`, auth, csrfProtection, async (req, res) => {
   res.render(`offers/new-ticket`, { categories, user, error, csrfToken: req.csrfToken() });
 });
 
-const upload = multer({ storage });
+const upload = require(`../middlewares/upload`);
 
 offersRouter.post(`/add`, auth, csrfProtection, upload.single(`avatar`), async (req, res) => {
   const { user } = req.session;
