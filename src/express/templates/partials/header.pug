@@ -11,7 +11,7 @@ header(class={header: true, "header--logged": user})
         li.header__item
           a(href="/logout") Выход
     form.search(method="get" action="/search" autocomplete="off")
-      input(type="search" name="search" placeholder="Поиск" aria-label="Поиск")
+      input(type="search" name="query" placeholder="Поиск" aria-label="Поиск")
       .search__icon
       .search__close-btn
     if user

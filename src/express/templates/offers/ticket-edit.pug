@@ -1,4 +1,4 @@
-extends layout.pug
+extends ../layout.pug
 
 block content
   main.page-content
@@ -31,7 +31,7 @@ block content
                   span Обязательное поле
               .ticket-form__row
                 select#category-field.form__select.js-multiple-select(name="category" data-label="Выбрать категорию публикации" multiple="")
-                  each category, index in categories
+                  each category in categories
                     option(value=category.id selected=offer.categories.some(item => item.id === category.id)) #{category.name}
               .ticket-form__row
                 .form__field.form__field--price
@@ -45,5 +45,5 @@ block content
                   .switch__item
                     input#sell-field.visually-hidden(type="radio" name="action" value="SALE" checked=(offer.type === 'SALE'))
                     label.switch__button(for="sell-field") Продам
+            +errorMessage(error)
             button.form__button.btn.btn--medium.js-button(type="submit") Сохранить
-            

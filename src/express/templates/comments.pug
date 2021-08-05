@@ -5,16 +5,16 @@ block content
     section.comments
       .comments__wrapper
         h1.visually-hidden Страница комментариев
-        each pugOffer in pugOffers
+        each offer in offers
           .comments__block
             .comments__header
               a.announce-card(href="#")
-                h2.announce-card__title #{pugOffer.title}
+                h2.announce-card__title #{offer.title}
                 span.announce-card__info
-                  span.announce-card__price ₽ #{pugOffer.sum}
-                  +ticketLabel(pugOffer.type)(class=`announce-card__type`)
+                  span.announce-card__price ₽ #{offer.sum}
+                  +ticketLabel(offer.type)(class=`announce-card__type`)
             ul.comments-list
-            each comment in pugOffer.comments
+            each comment in offer.comments
               li.js-card
                 .comment-card
                   .comment-card__header
@@ -25,4 +25,3 @@ block content
                     p
                       | #{comment.text}
                   button.comment-card__delete.js-delete(type="button") Удалить
-                  
