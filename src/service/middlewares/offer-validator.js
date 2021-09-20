@@ -1,6 +1,6 @@
 'use strict';
 
-const { HttpCode } = require(`../constants`);
+const { HttpCode } = require(`../../constants`);
 const Joi = require(`joi`);
 
 const schema = Joi.object({

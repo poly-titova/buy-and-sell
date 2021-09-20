@@ -9,13 +9,13 @@ block content
         .tickets-list__header
           p.tickets-list__title Самое свежее
         ul
-          each pugOffer in pugOffers
+          each offer in offers
             li.tickets-list__item
-              ticketCard()
+              +ticketCard()
                 .ticket-card__img
-                  img(src=`/img/${pugOffer.picture}` alt=pugOffer.title)
+                  img(src=`/img/${offer.picture}` alt=offer.title)
                 .ticket-card__info
-                  +ticketLabel(pugOffer.type)
+                  +ticketLabel(offer.type)
                   .ticket-card__categories
                     each category in offer.categories
                       a(href="#") #{category.name}
@@ -23,8 +23,8 @@ block content
                     h3.ticket-card__title
                       a(href=`offers/${offer.id}`) #{offer.title}
                     p.ticket-card__price
-                      span.js-sum #{pugOffer.sum}
+                      span.js-sum #{offer.sum}
                       |  ₽
                   .ticket-card__desc
-                    p #{pugOffer.description}
-  +pagination(page, totalPages, 2, `?`) 
+                    p #{offer.description}
+  +pagination(page, totalPages, 2, `?`)                    

@@ -5,28 +5,39 @@ const fs = require(`fs`).promises;
 const {
   getRandomInt,
   shuffle,
-} = require(`../utils`);
+} = require(`../../utils`);
 
 const DEFAULT_COUNT = 1;
 const MAX_COMMENTS = 4;
 const FILE_NAME = `fill-db.sql`;
-const {
-  OfferType,
-  SumRestrict,
-  PictureRestrict
-} = require(`./mockData`);
 
-const pathCategories = `./data/categories.txt`;
-const pathSentences = `./data/sentences.txt`;
-const pathTitles = `./data/titles.txt`;
-const pathComments = `./data/comments.txt`;
+const OfferType = {
+  OFFER: `offer`,
+  SALE: `sale`,
+};
+
+const SumRestrict = {
+  MIN: 1000,
+  MAX: 100000,
+};
+
+const PictureRestrict = {
+  MIN: 1,
+  MAX: 16,
+};
+
+const FILE_CATEGORIES_PATH = `./data/categories.txt`;
+const FILE_SENTENCES_PATH = `./data/sentences.txt`;
+const FILE_TITLES_PATH = `./data/titles.txt`;
+const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
 const readFiles = async (path) => {
   try {
     const result = await fs.readFile(path, `utf8`);
-    return result.split(`\n`);
+    return result.trim().split(`\n`);
   } catch (err) {
-    console.error(err);
+    console.error(chalk.red(err));
+    return [];
   }
 };
 
@@ -49,7 +60,7 @@ const generateOffers = (count, titles, categoryCount, userCount, sentences, comm
     description: shuffle(sentences).slice(1, 5).join(` `),
     picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
     title: titles[getRandomInt(0, titles.length - 1)],
-    type: OfferType[Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)]],
+    type: Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)],
     sum: getRandomInt(SumRestrict.MIN, SumRestrict.MAX),
     userId: getRandomInt(1, userCount)
   }))
@@ -58,11 +69,11 @@ const generateOffers = (count, titles, categoryCount, userCount, sentences, comm
 module.exports = {
   name: `--fill`,
   async run(userIndex) {
-    const categories = await readFiles(pathCategories);
-    const sentences = await readFiles(pathSentences);
-    const titles = await readFiles(pathTitles);
-    const commentSentences = await readFiles(pathComments);
-    
+    const categories = await readFiles(FILE_CATEGORIES_PATH);
+    const sentences = await readFiles(FILE_SENTENCES_PATH);
+    const titles = await readFiles(FILE_TITLES_PATH);
+    const commentSentences = await readFiles(FILE_COMMENTS_PATH);
+
     const [count] = userIndex;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
@@ -112,26 +123,26 @@ module.exports = {
     ).join(`,\n`);
 
     const content = `
-    INSERT INTO users(email, password_hash, first_name, last_name, avatar) VALUES
-    ${userValues};
-    INSERT INTO categories(name) VALUES
-    ${categoryValues};
-    ALTER TABLE offers DISABLE TRIGGER ALL;
-    INSERT INTO offers(title, description, type, sum, picture, user_id) VALUES
-    ${offerValues};
-    ALTER TABLE offers ENABLE TRIGGER ALL;
-    ALTER TABLE offer_categories DISABLE TRIGGER ALL;
-    INSERT INTO offer_categories(offer_id, category_id) VALUES
-    ${offerCategoryValues};
-    ALTER TABLE offer_categories ENABLE TRIGGER ALL;
-    ALTER TABLE comments DISABLE TRIGGER ALL;
-    INSERT INTO COMMENTS(text, user_id, offer_id) VALUES
-    ${commentValues};
-    ALTER TABLE comments ENABLE TRIGGER ALL;`;
+INSERT INTO users(email, password_hash, first_name, last_name, avatar) VALUES
+${userValues};
+INSERT INTO categories(name) VALUES
+${categoryValues};
+ALTER TABLE offers DISABLE TRIGGER ALL;
+INSERT INTO offers(title, description, type, sum, picture, user_id) VALUES
+${offerValues};
+ALTER TABLE offers ENABLE TRIGGER ALL;
+ALTER TABLE offer_categories DISABLE TRIGGER ALL;
+INSERT INTO offer_categories(offer_id, category_id) VALUES
+${offerCategoryValues};
+ALTER TABLE offer_categories ENABLE TRIGGER ALL;
+ALTER TABLE comments DISABLE TRIGGER ALL;
+INSERT INTO COMMENTS(text, user_id, offer_id) VALUES
+${commentValues};
+ALTER TABLE comments ENABLE TRIGGER ALL;`;
 
     try {
       await fs.writeFile(FILE_NAME, content);
-      console.log(chalk.green(`Operation success. File created.`));          
+      console.log(chalk.green(`Operation success. File created.`));
     } catch (err) {
       console.error(chalk.red(`Can't write data to file...`));
     }

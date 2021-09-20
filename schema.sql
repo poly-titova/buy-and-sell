@@ -1,19 +1,19 @@
 CREATE TABLE categories(
-  id SERIAL PRIMARY KEY,
+  id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   name varchar(255) NOT NULL
 );
 
 CREATE TABLE users(
-  id SERIAL PRIMARY KEY,
+  id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   email varchar(255) UNIQUE NOT NULL,
   password_hash varchar(255) NOT NULL,
   first_name varchar(255) NOT NULL,
   last_name varchar(255) NOT NULL,
-  avatar varchar(50) NOT NULL 
+  avatar varchar(50) NOT NULL
 );
 
 CREATE TABLE offers(
-  id SERIAL PRIMARY KEY,
+  id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   title varchar(255) NOT NULL,
   description text NOT NULL,
   sum integer NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE offers(
 );
 
 CREATE TABLE comments(
-  id SERIAL PRIMARY KEY,
+  id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   offer_id integer NOT NULL,
   user_id integer NOT NULL,
   text text NOT NULL,
@@ -42,4 +42,4 @@ CREATE TABLE offer_categories(
   FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
-CREATE INDEX offers ON offers (title);
+CREATE INDEX ON offers(title);

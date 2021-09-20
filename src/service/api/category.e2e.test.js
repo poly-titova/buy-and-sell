@@ -5,15 +5,31 @@ const request = require(`supertest`);
 const Sequelize = require(`sequelize`);
 
 const initDB = require(`../lib/init-db`);
+const passwordUtils = require(`../lib/password`);
 const category = require(`./category`);
 const DataService = require(`../data-service/category`);
 
-const { HttpCode } = require(`../constants`);
+const { HttpCode } = require(`../../constants`);
 
 const mockCategories = [
   `Животные`,
   `Журналы`,
   `Игры`
+];
+
+const mockUsers = [
+  {
+    name: `Иван Иванов`,
+    email: `ivanov@example.com`,
+    passwordHash: passwordUtils.hashSync(`ivanov`),
+    avatar: `avatar01.jpg`
+  },
+  {
+    name: `Пётр Петров`,
+    email: `petrov@example.com`,
+    passwordHash: passwordUtils.hashSync(`petrov`),
+    avatar: `avatar02.jpg`
+  }
 ];
 
 const mockOffers = [
@@ -25,15 +41,15 @@ const mockOffers = [
     ],
     "comments": [
       {
-        "user": `ivanov@example.com`,
+        "user": `petrov@example.com`,
         "text": `С чем связана продажа? Почему так дешёво? Неплохо, но дорого. А где блок питания?`
       },
       {
-        "user": `petrov@example.com`,
+        "user": `ivanov@example.com`,
         "text": `А где блок питания?`
       },
       {
-        "user": `ivanov@example.com`,
+        "user": `petrov@example.com`,
         "text": `Оплата наличными или перевод на карту? Неплохо, но дорого. Почему в таком ужасном состоянии?`
       }
     ],
@@ -50,15 +66,15 @@ const mockOffers = [
     ],
     "comments": [
       {
-        "user": `petrov@example.com`,
+        "user": `ivanov@example.com`,
         "text": `А где блок питания? С чем связана продажа? Почему так дешёво?`
       },
       {
-        "user": `ivanov@example.com`,
+        "user": `petrov@example.com`,
         "text": `А сколько игр в комплекте?`
       },
       {
-        "user": `petrov@example.com`,
+        "user": `ivanov@example.com`,
         "text": `Оплата наличными или перевод на карту? Вы что?! В магазине дешевле.`
       }
     ],
@@ -87,17 +103,17 @@ const mockOffers = [
     "sum": 87784
   },
   {
-    "user": `ivanov@example.com`,
+    "user": `petrov@example.com`,
     "categories": [
       `Игры`
     ],
     "comments": [
       {
-        "user": `petrov@example.com`,
+        "user": `ivanov@example.com`,
         "text": `А сколько игр в комплекте? Продаю в связи с переездом. Отрываю от сердца.`
       },
       {
-        "user": `ivanov@example.com`,
+        "user": `petrov@example.com`,
         "text": `С чем связана продажа? Почему так дешёво?`
       }
     ],
@@ -108,17 +124,17 @@ const mockOffers = [
     "sum": 54264
   },
   {
-    "user": `petrov@example.com`,
+    "user": `ivanov@example.com`,
     "categories": [
       `Животные`
     ],
     "comments": [
       {
-        "user": `petrov@example.com`,
+        "user": `ivanov@example.com`,
         "text": `Оплата наличными или перевод на карту?`
       },
       {
-        "user": `ivanov@example.com`,
+        "user": `petrov@example.com`,
         "text": `Почему в таком ужасном состоянии? Совсем немного...`
       },
       {
@@ -126,7 +142,7 @@ const mockOffers = [
         "text": `Продаю в связи с переездом. Отрываю от сердца. Оплата наличными или перевод на карту? Вы что?! В магазине дешевле.`
       },
       {
-        "user": `ivanov@example.com`,
+        "user": `petrov@example.com`,
         "text": `С чем связана продажа? Почему так дешёво? А сколько игр в комплекте?`
       }
     ],
@@ -144,7 +160,7 @@ const app = express();
 app.use(express.json());
 
 beforeAll(async () => {
-  await initDB(mockDB, { categories: mockCategories, offers: mockOffers });
+  await initDB(mockDB, { categories: mockCategories, offers: mockOffers, users: mockUsers });
   category(app, new DataService(mockDB));
 });
 

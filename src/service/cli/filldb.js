@@ -2,43 +2,53 @@
 
 const fs = require(`fs`).promises;
 const {
-  getPictureFilename,
   getRandomInt,
-  shuffle
-} = require(`../utils`);
+  shuffle,
+} = require(`../../utils`);
 const { getLogger } = require(`../lib/logger`);
 const sequelize = require(`../lib/sequelize`);
 const initDatabase = require(`../lib/init-db`);
+const passwordUtils = require(`../lib/password`);
 
 const DEFAULT_COUNT = 1;
 const MAX_COMMENTS = 4;
 
-const pathCategories = `./data/categories.txt`;
-const pathSentences = `./data/sentences.txt`;
-const pathTitles = `./data/titles.txt`;
-const pathComments = `./data/comments.txt`;
+const FILE_CATEGORIES_PATH = `./data/categories.txt`;
+const FILE_SENTENCES_PATH = `./data/sentences.txt`;
+const FILE_TITLES_PATH = `./data/titles.txt`;
+const FILE_COMMENTS_PATH = `./data/comments.txt`;
 
-const {
-  OfferType,
-  SumRestrict,
-  PictureRestrict
-} = require(`./mockData`);
+const OfferType = {
+  OFFER: `offer`,
+  SALE: `sale`,
+};
+
+const SumRestrict = {
+  MIN: 1000,
+  MAX: 100000,
+};
+
+const PictureRestrict = {
+  MIN: 1,
+  MAX: 16,
+};
 
 const logger = getLogger({});
 
 const readFiles = async (path) => {
   try {
     const result = await fs.readFile(path, `utf8`);
-    return result.split(`\n`);
+    return result.trim().split(`\n`);
   } catch (err) {
-    console.error(err);
+    logger.error(`Error when reading file: ${err.message}`);
+    return [];
   }
 };
 
-const generateComments = (count, COMMENTS, USERS) => (
+const generateComments = (count, comments, users) => (
   Array(count).fill({}).map(() => ({
-    user: USERS[getRandomInt(0, USERS.length - 1)].email,
-    text: shuffle(COMMENTS)
+    user: users[getRandomInt(0, users.length - 1)].email,
+    text: shuffle(comments)
       .slice(0, getRandomInt(1, 3))
       .join(` `)
   }))
@@ -58,25 +68,20 @@ const getRandomSubarray = (items) => {
   return result;
 };
 
-const generateOffers = (count, CATEGORIES, SENTENCES, TITLES, COMMENTS, USERS) =>
-  Array(count)
-    .fill({})
-    .map(() => ({
-      user: USERS[getRandomInt(0, USERS.length - 1)].email,
-      title: TITLES[getRandomInt(0, TITLES.length - 1)],
-      picture: getPictureFilename(
-        getRandomInt(PictureRestrict.min, PictureRestrict.max)
-      ),
-      description: shuffle(SENTENCES)
-        .slice(1, 5)
-        .join(` `),
-      type: Object.keys(OfferType)[
-        Math.floor(Math.random() * Object.keys(OfferType).length)
-      ],
-      sum: getRandomInt(SumRestrict.min, SumRestrict.max),
-      categories: getRandomSubarray(CATEGORIES),
-      comments: generateComments(getRandomInt(1, MAX_COMMENTS), COMMENTS, USERS),
-    }));
+const getPictureFileName = (number) => `item${number.toString().padStart(2, 0)}.jpg`;
+
+const generateOffers = (count, titles, categories, sentences, comments, users) => (
+  Array(count).fill({}).map(() => ({
+    user: users[getRandomInt(0, users.length - 1)].email,
+    title: titles[getRandomInt(0, titles.length - 1)],
+    picture: getPictureFileName(getRandomInt(PictureRestrict.MIN, PictureRestrict.MAX)),
+    description: shuffle(sentences).slice(1, 5).join(` `),
+    type: Object.keys(OfferType)[Math.floor(Math.random() * Object.keys(OfferType).length)],
+    sum: getRandomInt(SumRestrict.MIN, SumRestrict.MAX),
+    categories: getRandomSubarray(categories),
+    comments: generateComments(getRandomInt(1, MAX_COMMENTS), comments, users),
+  }))
+);
 
 module.exports = {
   name: `--filldb`,
@@ -90,11 +95,11 @@ module.exports = {
     }
     logger.info(`Connection to database established`);
 
-    const CATEGORIES = await readFiles(pathCategories);
-    const SENTENCES = await readFiles(pathSentences);
-    const TITLES = await readFiles(pathTitles);
-    const COMMENTS = await readFiles(pathComments);
-    const USERS = [
+    const categories = await readFiles(FILE_CATEGORIES_PATH);
+    const sentences = await readFiles(FILE_SENTENCES_PATH);
+    const titles = await readFiles(FILE_TITLES_PATH);
+    const comments = await readFiles(FILE_COMMENTS_PATH);
+    const users = [
       {
         name: `Иван Иванов`,
         email: `ivanov@example.com`,
@@ -111,8 +116,8 @@ module.exports = {
 
     const [count] = userIndex;
     const countOffer = Number.parseInt(count, 10) || DEFAULT_COUNT;
-    const offers = generateOffers(countOffer, TITLES, CATEGORIES, SENTENCES, COMMENTS, USERS);
+    const offers = generateOffers(countOffer, titles, categories, sentences, comments, users);
 
-    return initDatabase(sequelize, { offers, CATEGORIES, USERS });
+    return initDatabase(sequelize, { offers, categories, users });
   }
 };

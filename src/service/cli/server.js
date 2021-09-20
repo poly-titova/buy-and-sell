@@ -10,7 +10,7 @@ const { getLogger } = require(`../lib/logger`);
 const logger = getLogger({ name: `api` });
 
 // подключим статус-коды
-const { HttpCode, API_PREFIX } = require(`../constants`);
+const { HttpCode, API_PREFIX } = require(`../../constants`);
 
 // порт по умолчанию и имя файла с моками
 const DEFAULT_PORT = 3000;

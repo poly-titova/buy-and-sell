@@ -5,10 +5,11 @@ const request = require(`supertest`);
 const Sequelize = require(`sequelize`);
 
 const initDB = require(`../lib/init-db`);
+const passwordUtils = require(`../lib/password`);
 const user = require(`./user`);
 const DataService = require(`../data-service/user`);
 
-const { HttpCode } = require(`../constants`);
+const { HttpCode } = require(`../../constants`);
 
 const mockCategories = [
   `Животные`,
@@ -20,13 +21,13 @@ const mockUsers = [
   {
     name: `Иван Иванов`,
     email: `ivanov@example.com`,
-    passwordHash: await passwordUtils.hash(`ivanov`),
+    passwordHash: passwordUtils.hashSync(`ivanov`),
     avatar: `avatar01.jpg`
   },
   {
     name: `Пётр Петров`,
     email: `petrov@example.com`,
-    passwordHash: await passwordUtils.hash(`petrov`),
+    passwordHash: passwordUtils.hashSync(`petrov`),
     avatar: `avatar02.jpg`
   }
 ];
@@ -181,6 +182,7 @@ describe(`API creates user if data is valid`, () => {
   });
 
   test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.CREATED));
+
 });
 
 describe(`API refuses to create user if data is invalid`, () => {

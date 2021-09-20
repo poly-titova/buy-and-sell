@@ -2,7 +2,7 @@
 
 // Подключаем и инициализируем экземпляр Router
 const { Router } = require(`express`);
-const mainRoutes = new Router();
+const mainRouter = new Router();
 const api = require(`../api`).getAPI();
 const upload = require(`../middlewares/upload`);
 
@@ -33,16 +33,16 @@ mainRouter.get(`/`, async (req, res) => {
   const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
 
   // передадим все эти данные в шаблон
-  res.render(`main`, { offers, categories, page, totalPages, user });
+  res.render(`main`, { offers, page, totalPages, categories, user });
 });
 
-mainRoutes.get(`/register`, (req, res) => {
+mainRouter.get(`/register`, (req, res) => {
   const { error } = req.query;
   const { user } = req.session;
   res.render(`sign-up`, { error, user });
 });
 
-mainRoutes.post(`/register`, upload.single(`avatar`), async (req, res) => {
+mainRouter.post(`/register`, upload.single(`avatar`), async (req, res) => {
   const { body, file } = req;
   const userData = {
     avatar: file.filename,
@@ -59,13 +59,13 @@ mainRoutes.post(`/register`, upload.single(`avatar`), async (req, res) => {
   }
 });
 
-mainRoutes.get(`/login`, (req, res) => {
+mainRouter.get(`/login`, (req, res) => {
   const { error } = req.query;
   const { user } = req.session;
-  res.render(`login`, { error });
+  res.render(`login`, { error, user });
 });
 
-mainRoutes.post(`/login`, async (req, res) => {
+mainRouter.post(`/login`, async (req, res) => {
   try {
     const user = await api.auth(req.body[`user-email`], req.body[`user-password`]);
     req.session.user = user;
@@ -75,24 +75,27 @@ mainRoutes.post(`/login`, async (req, res) => {
   }
 });
 
-mainRoutes.get(`/logout`, (req, res) => {
+mainRouter.get(`/logout`, (req, res) => {
   delete req.session.user;
   res.redirect(`/`);
 });
 
-mainRoutes.get(`/search`, async (req, res) => {
+mainRouter.get(`/search`, async (req, res) => {
+  const { user } = req.session;
   try {
-    const { search } = req.query;
-    const results = await api.search(search);
+    const { query } = req.query;
+    const results = await api.search(query);
 
     res.render(`search-result`, {
-      results
+      results,
+      user
     });
   } catch (error) {
     res.render(`search-result`, {
-      results: []
+      results: [],
+      user
     });
   }
 });
 
-module.exports = mainRoutes;
+module.exports = mainRouter;

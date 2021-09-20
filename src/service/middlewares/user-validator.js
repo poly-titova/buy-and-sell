@@ -1,7 +1,7 @@
 'use strict';
 
 const Joi = require(`joi`);
-const { HttpCode } = require(`../constants`);
+const { HttpCode } = require(`../../constants`);
 
 const schema = Joi.object({
   name: Joi.string().pattern(/[^0-9$&+,:;=?@#|'<>.^*()%!]+/).required(),

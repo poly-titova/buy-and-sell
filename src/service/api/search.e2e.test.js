@@ -5,16 +5,32 @@ const request = require(`supertest`);
 const Sequelize = require(`sequelize`);
 
 const initDB = require(`../lib/init-db`);
+const passwordUtils = require(`../lib/password`);
 const search = require(`./search`);
 const DataService = require(`../data-service/search`);
 
-const { HttpCode } = require(`../constants`);
+const { HttpCode } = require(`../../constants`);
 
 const mockCategories = [
   `Книги`,
   `Цветы`,
   `Животные`,
   `Разное`
+];
+
+const mockUsers = [
+  {
+    name: `Иван Иванов`,
+    email: `ivanov@example.com`,
+    passwordHash: passwordUtils.hashSync(`ivanov`),
+    avatar: `avatar01.jpg`
+  },
+  {
+    name: `Пётр Петров`,
+    email: `petrov@example.com`,
+    passwordHash: passwordUtils.hashSync(`petrov`),
+    avatar: `avatar02.jpg`
+  }
 ];
 
 const mockOffers = [
@@ -26,11 +42,11 @@ const mockOffers = [
     ],
     "comments": [
       {
-        "user": `petrov@example.com`,
+        "user": `ivanov@example.com`,
         "text": `Почему в таком ужасном состоянии?`
       },
       {
-        "user": `ivanov@example.com`,
+        "user": `petrov@example.com`,
         "text": `Продаю в связи с переездом. Отрываю от сердца. А где блок питания?`
       }
     ],
@@ -48,7 +64,7 @@ const mockOffers = [
     ],
     "comments": [
       {
-        "user": `petrov@example.com`,
+        "user": `ivanov@example.com`,
         "text": `Неплохо, но дорого. Совсем немного... Оплата наличными или перевод на карту?`
       },
       {
@@ -60,7 +76,7 @@ const mockOffers = [
         "text": `Неплохо, но дорого. Совсем немного...`
       },
       {
-        "user": `ivanov@example.com`,
+        "user": `petrov@example.com`,
         "text": `Вы что?! В магазине дешевле.`
       }
     ],
@@ -96,7 +112,7 @@ const app = express();
 app.use(express.json());
 
 beforeAll(async () => {
-  await initDB(mockDB, { categories: mockCategories, offers: mockOffers });
+  await initDB(mockDB, { categories: mockCategories, offers: mockOffers, users: mockUsers });
   search(app, new DataService(mockDB));
 });
 

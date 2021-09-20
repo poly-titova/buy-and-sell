@@ -28,11 +28,11 @@ const define = (sequelize) => {
 
   OfferCategory.init({}, { sequelize });
 
-  Offer.belongsToMany(Category, { through: `offerCategories`, as: Aliase.CATEGORIES });
-  Category.belongsToMany(Offer, { through: `offerCategories`, as: Aliase.OFFERS });
+  Offer.belongsToMany(Category, { through: OfferCategory, as: Aliase.CATEGORIES });
+  Category.belongsToMany(Offer, { through: OfferCategory, as: Aliase.OFFERS });
   Category.hasMany(OfferCategory, { as: Aliase.OFFER_CATEGORIES });
 
-  return { Category, Comment, Offer, OfferCategory };
+  return { Category, Comment, Offer, OfferCategory, User };
 }
 
 module.exports = define;
